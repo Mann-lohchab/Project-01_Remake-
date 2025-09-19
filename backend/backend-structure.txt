@@ -1,0 +1,40 @@
+.
+├── app.js
+├── backend-structure.txt
+├── config
+│   └── database.js
+├── Controller
+│   ├── AttendanceController.js
+│   ├── CalendarController.js
+│   ├── HomeworkController.js
+│   ├── MarksController.js
+│   ├── NoticeController.js
+│   ├── studentAuthController.js
+│   └── TimetableController.js
+├── Middleware
+│   ├── auth.js
+│   └── validation.js
+├── Models
+│   ├── Attendance.js
+│   ├── Calendar.js
+│   ├── Homework.js
+│   ├── Marks.js
+│   ├── Notice.js
+│   ├── Student.js
+│   └── Timetable.js
+├── package.json
+├── Public
+├── Routes
+│   ├── Attendance.js
+│   ├── Calendar.js
+│   ├── Homework.js
+│   ├── Marks.js
+│   ├── Notice.js
+│   ├── StudentAuth.js
+│   └── Timetable.js
+├── Uploads
+└── utlis
+    ├── dateHelpers.js
+    └── responseHelpers.js
+
+9 directories, 29 files

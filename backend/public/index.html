@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal API</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CSS Variables for Theme */
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #0f0f0f;
+            --card-bg: #151515;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --accent-purple: #8a2be2;
+            --accent-hover: #6a1cb9;
+            --border-color: #2a2a2a;
+            --success: #00CC99;
+            --gradient-start: #8a2be2;
+            --gradient-end: #4b0082;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f8f8;
+            --card-bg: #f0f0f0;
+            --text-primary: #000000;
+            --text-secondary: #555555;
+            --accent-purple: #8b3dff;
+            --accent-hover: #6a1cb9;
+            --border-color: #e0e0e0;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Header */
+        header {
+            padding: 1.5rem 0;
+            background-color: rgba(10, 10, 10, 0.8);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        [data-theme="light"] header {
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            color: var(--accent-purple);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-purple);
+        }
+
+        .theme-toggle {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent-purple);
+            background: var(--bg-secondary);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 8rem 0 6rem;
+            text-align: center;
+            background: linear-gradient(to bottom, var(--bg-primary), var(--bg-secondary));
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(138, 43, 226, 0.1), transparent 70%);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            position: relative;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.7rem;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            margin-bottom: 4rem;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--accent-purple);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+
+        /* Sections */
+        section {
+            padding: 5rem 0;
+        }
+
+        section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background-color: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .content-section h2 {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+
+        .section-icon {
+            width: 12px;
+            height: 12px;
+            background: var(--accent-purple);
+            border-radius: 50%;
+        }
+
+        /* Endpoints */
+        .endpoint-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .endpoint-category {
+            margin-bottom: 2rem;
+        }
+
+        .category-title {
+            font-size: 1.3rem;
+            color: var(--accent-purple);
+            margin-bottom: 1rem;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .endpoint {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .endpoint:hover {
+            transform: translateX(6px);
+            background: var(--bg-secondary);
+            border-color: var(--accent-purple);
+        }
+
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .method {
+            background: var(--accent-purple);
+            color: #ffffff;
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            letter-spacing: 0.5px;
+        }
+
+        .path {
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        /* Tech Stack */
+        .tech-list {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .tech {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+        }
+
+        .tech:hover {
+            border-color: var(--accent-purple);
+            transform: translateY(-3px);
+            background: var(--bg-secondary);
+        }
+
+        .version-info {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 2rem;
+            font-weight: 500;
+        }
+
+        .port-highlight {
+            color: var(--accent-purple);
+            font-weight: 700;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--bg-primary);
+            border-top: 1px solid var(--border-color);
+            padding: 4rem 0 2rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+            text-align: left;
+        }
+
+        .footer-section h3 {
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-section h3::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--accent-purple);
+            border-radius: 50%;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-section ul li a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--accent-purple);
+        }
+
+        .footer-bottom {
+            border-top: 2px solid var(--border-color);
+            margin-top: 2rem;
+            padding-top: 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .footer-bottom .port {
+            color: var(--accent-purple);
+            font-weight: 700;
+        }
+
+        /* htop Output Section */
+        .htop-section {
+            background-color: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .htop-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .htop-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-purple);
+        }
+
+        .htop-refresh {
+            background: var(--accent-purple);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s ease;
+        }
+
+        .htop-refresh:hover {
+            background: var(--accent-hover);
+        }
+
+        .htop-terminal {
+            background-color: #1a1a1a;
+            color: #00ff00;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            padding: 1rem;
+            border-radius: 8px;
+            height: 400px;
+            overflow-y: auto;
+            white-space: pre;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            border: 1px solid #333;
+        }
+
+        .htop-bar {
+            height: 20px;
+            background-color: #2a2a2a;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+        }
+
+        .htop-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .cpu-bar {
+            background: linear-gradient(90deg, #ff6b6b, #ff8e53);
+        }
+
+        .memory-bar {
+            background: linear-gradient(90deg, #4ecdc4, #42a5f5);
+        }
+
+        .disk-bar {
+            background: linear-gradient(90deg, #ff9a8b, #ff6b6b);
+        }
+
+        .network-bar {
+            background: linear-gradient(90deg, #9b59b6, #3498db);
+        }
+
+        .htop-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .htop-stat {
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .htop-stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .htop-stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent-purple);
+        }
+
+        .process-row {
+            display: flex;
+            border-bottom: 1px solid #333;
+            padding: 2px 0;
+        }
+
+        .process-pid, .process-user, .process-priority, .process-virt, 
+        .process-res, .process-shr, .process-state, .process-cpu, 
+        .process-mem, .process-time, .process-command {
+            padding: 0 4px;
+        }
+
+        .process-pid { width: 60px; }
+        .process-user { width: 80px; }
+        .process-priority { width: 50px; }
+        .process-virt { width: 70px; }
+        .process-res { width: 70px; }
+        .process-shr { width: 60px; }
+        .process-state { width: 30px; }
+        .process-cpu { width: 50px; }
+        .process-mem { width: 50px; }
+        .process-time { width: 90px; }
+        .process-command { flex: 1; }
+
+        .cpu-core {
+            margin-bottom: 4px;
+        }
+
+        .cpu-core-bar {
+            height: 12px;
+            background-color: #2a2a2a;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 2px;
+        }
+
+        .cpu-core-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ff8e53);
+            border-radius: 2px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            section {
+                padding: 3rem 0;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .endpoint-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.8rem;
+            }
+            
+            .content-section {
+                padding: 2rem;
+            }
+            
+            .htop-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .htop-terminal {
+                font-size: 0.7rem;
+            }
+
+            .process-pid, .process-user, .process-priority, .process-virt, 
+            .process-res, .process-shr, .process-state, .process-cpu, 
+            .process-mem, .process-time {
+                width: auto;
+                flex: 1;
+                min-width: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="#" class="logo">
+                    <i class="fas fa-door-open logo-icon"></i>
+                    Portal API
+                </a>
+                <div class="nav-links">
+                    <a href="#about">About</a>
+                    <a href="#auth">Authentication</a>
+                    <a href="#endpoints">Endpoints</a>
+                    <a href="#tech">Tech Stack</a>
+                    <a href="#htop">Server Status</a>
+                </div>
+                <button class="theme-toggle" id="theme-toggle">
+                    <i class="fas fa-moon"></i> Dark Mode
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Student Portal API</h1>
+            <p>Professional backend service for comprehensive student data management and academic operations</p>
+            
+            <div class="status">
+                <div class="status-dot"></div>
+                <span>Service Operational</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="content-section">
+        <div class="container">
+            <h2>
+                <div class="section-icon"></div>
+                About This Portal
+            </h2>
+            <p>The Student Portal API is a comprehensive backend service designed to streamline academic operations and student data management. Built with modern web technologies, this robust system provides secure access to essential student services including attendance tracking, academic performance monitoring, assignment management, and institutional communications.</p>
+            <p>Our RESTful architecture ensures scalable, reliable, and efficient data exchange while maintaining the highest standards of security and performance. The API serves as the backbone for educational institutions seeking to digitize and optimize their student management processes.</p>
+        </div>
+    </section>
+
+    <!-- Authentication Section -->
+    <section id="auth" class="content-section">
+        <div class="container">
+            <h2>
+                <div class="section-icon"></div>
+                Authentication & Security
+            </h2>
+            <p>This API uses <strong>JWT (JSON Web Tokens)</strong> for secure authentication. All protected endpoints require a valid JWT token in the request header:</p>
+            <p><code>Authorization: Bearer &lt;your_token&gt;</code></p>
+
+            <h3 style="color: var(--accent-purple); margin: 2rem 0 1rem 0; font-size: 1.3rem;">👨‍🎓 Student Authentication</h3>
+            <p>🔑 Students authenticate via:</p>
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method">POST</span>
+                    <span class="path">/api/students/login</span>
+                </div>
+                <div class="description">Authenticate with student ID and password to receive a JWT token for accessing student-specific routes.</div>
+            </div>
+
+            <h3 style="color: var(--accent-purple); margin: 2rem 0 1rem 0; font-size: 1.3rem;">👨‍💼 Admin Authentication</h3>
+            <p>🔑 Administrators authenticate via:</p>
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method">POST</span>
+                    <span class="path">/api/admin/login</span>
+                </div>
+                <div class="description">Authenticate with admin ID and password to receive a JWT token for accessing admin-specific routes and student management functions.</div>
+            </div>
+
+            <h3 style="color: var(--accent-purple); margin: 2rem 0 1rem 0; font-size: 1.3rem;">👨‍🏫 Teacher Authentication</h3>
+            <p>🔑 Teachers authenticate via:</p>
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method">POST</span>
+                    <span class="path">/api/teachers/login</span>
+                </div>
+                <div class="description">Authenticate with teacher ID and password to receive a JWT token for accessing teacher-specific routes including attendance, homework, marks, and student management.</div>
+            </div>
+
+            <p>Once logged in, the token grants access to protected routes based on user role. Unauthorized requests will return <code>401 Unauthorized</code>.</p>
+        </div>
+    </section>
+
+    <!-- Project Structure -->
+    <section class="content-section">
+        <div class="container">
+            <h2>
+                <div class="section-icon"></div>
+                Project Structure
+            </h2>
+            <div style="background: var(--card-bg); padding: 1.5rem; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--text-secondary); line-height: 1.8; overflow-x: auto;">
+                <pre style="margin: 0;">
+├── app.js
+├── backend-structure.txt
+├── config
+│   └── database.js
+├── Controller
+│   ├── Admin
+│   │   └── AdminAuthController.js
+│   ├── Teacher
+│   │   ├── AttendanceController.js
+│   │   ├── CalendarController.js
+│   │   ├── HomeworkController.js
+│   │   ├── MarksController.js
+│   │   ├── NoticeController.js
+│   │   ├── StudentController.js
+│   │   ├── TimetableController.js
+│   │   └── teacherAuthController.js
+│   ├── AttendanceController.js
+│   ├── CalendarController.js
+│   ├── HomeworkController.js
+│   ├── MarksController.js
+│   ├── NoticeController.js
+│   ├── StudentAuthController.js
+│   └── TimetableController.js
+├── Middleware
+│   ├── AdminAuth.js
+│   ├── auth.js
+│   └── validation.js
+├── Models
+│   ├── Admin.js
+│   ├── Attendance.js
+│   ├── Calendar.js
+│   ├── Homework.js
+│   ├── Marks.js
+│   ├── Notice.js
+│   ├── Student.js
+│   └── Timetable.js
+├── package.json
+├── Public
+├── Routes
+│   ├── Admin
+│   │   ├── AdminAuth.js
+│   │   ├── Calendar.js
+│   │   ├── Student.js
+│   │   └── Teacher.js
+│   ├── Teacher
+│   │   ├── Attendance.js
+│   │   ├── Calendar.js
+│   │   ├── Homework.js
+│   │   ├── Marks.js
+│   │   ├── Notice.js
+│   │   ├── TeacherAuth.js
+│   │   └── Timetable.js
+│   ├── Attendance.js
+│   ├── Calendar.js
+│   ├── Homework.js
+│   ├── Marks.js
+│   ├── Notice.js
+│   ├── StudentAuth.js
+│   └── Timetable.js
+├── test-admin-jwt-auth.js
+├── create-admin-user.js
+├── Uploads
+└── utlis
+    ├── dateHelpers.js
+    ├── jwtHelpers.js
+    └── responseHelpers.js
+
+12 directories, 52 files</pre>
+            </div>
+        </div>
+    </section>
+    
+    <!-- API Endpoints Section -->
+    <section id="endpoints" class="content-section">
+        <div class="container">
+            <h2>
+                <div class="section-icon"></div>
+                API Endpoints
+            </h2>
+            <div class="endpoint-list">
+                
+                <!-- Public Endpoints -->
+                <div class="endpoint-category">
+                    <div class="category-title">🔓 Public (No Auth)</div>
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method">POST</span>
+                            <span class="path">/api/students/login</span>
+                        </div>
+                        <div class="description">Student authentication - receive JWT token for accessing student routes</div>
+                    </div>
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method">POST</span>
+                            <span class="path">/api/teachers/login</span>
+                        </div>
+                        <div class="description">Teacher authentication - receive JWT token for accessing teacher routes</div>
+                    </div>
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method">POST</span>
+                            <span class="path">/api/admin/login</span>
+                        </div>
+                        <div class="description">Admin authentication - receive JWT token for accessing admin routes</div>
+                    </div>
+                </div>
+
+                <!-- Private Endpoints -->
+                <div class="endpoint-category">
+                    <div class="category-title">🔐 Protected (JWT Required)</div>
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method">GET</span>
+                            <span class="path">/api/students/profile</span>
+                        </div>
+                        <div class="description">Retrieve authenticated student's complete profile and personal details</div>
+                    </div>
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method">GET</span>
+                            <span class="path">/api/students/attendance</span>
+                        </div>
+                        <div class="description">Access detailed attendance records with statistics and reporting</div>
+                    </div>
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method">GET</span>
+                            <span class="path">/api/students/calendar</span>
+                        </div>
+                        <div class="description">Fetch academic calendar events, holidays, and institutional dates</div>
+                    </div>
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method">GET</span>
+                            <span class="path">/api/students/homework</span>
+                        </div>
+                        <div class="description">Manage assignments, track submissions and monitor deadlines</div>
+                    </div>
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method">GET</span>
+                            <span class="path">/api/students/marks</span>
+                        </div>
+                        <div class="description">View academic performance, grades, and result analytics</div>
+                    </div>
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method">GET</span>
+                            <span class="path">/api/students/notices</span>
+                        </div>
+                        <div class="description">Receive official announcements and critical institutional notifications</div>
+                    </div>
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method">GET</span>
+                            <span class="path">/api/students/timetable</span>
+                        </div>
+                        <div class="description">Access class schedules, room assignments, and daily academic planning</div>
+                    </div>
+                </div>
+
+                <!-- Teacher Endpoints -->
+                <div class="endpoint-category">
+                    <div class="category-title">👨‍🏫 Teacher Only (Teacher JWT Required)</div>
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method">GET</span>
+                            <span class="path">/api/teachers/profile</span>
+                        </div>
+                        <div class="description">Retrieve authenticated teacher's complete profile and personal details</div>
+                    </div>
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method">GET</span>
+                            <span class="path">/api/teachers/dashboard</span>
+                        </div>
+                        <div class="description">Access teacher's dashboard with personalized welcome message</div>
+                    </div>
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method">GET</span>
+                            <span class="path">/api/teachers/Attendance</span>
+                        </div>
+                        <div class="description">View and manage student attendance records</div>
+                    </div>
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method">POST</span>
+                            <span class="path">/api/teachers/Attendance</span>
+                        </div>
+                        <div class="description">Mark attendance for students</div>
+                    </div>
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method">GET</span>
+                            <span class="path">/api/teachers/Calendar</span>
+                        </div>
+                        <div class="description">View academic calendar events and institutional dates</div>
+                    </div>
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method">GET</span>
+                            <span class="path">/api/teachers/Homework</span>
+                        </div>
+                        <div class="description">Manage homework assignments and track submissions</div>
+                    </div>
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method">POST</span>
+                            <span class="path">/api/teachers/Homework</span>
+                        </div>
+                        <div class="description">Create new homework assignments</div>
+                    </div>
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method">GET</span>
+                            <span class="path">/api/teachers/Marks/:id</span>
+                        </div>
+                        <div class="description">View student marks and academic performance</div>
+                    </div>
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method">POST</span>
+                            <span class="path">/api/teachers/Marks</span>
+                        </div>
+                        <div class="description">Add marks for students</div>
+                    </div>
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method">GET</span>
+                            <span class="path">/api/teachers/Notice</span>
+                        </div>
+                        <div class="description">View notices created by the teacher</div>
+                    </div>
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method">POST</span>
+                            <span class="path">/api/teachers/Notice</span>
+                        </div>
+                        <div class="description">Create new notices for students</div>
+                    </div>
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method">GET</span>
+                            <span class="path">/api/teachers/Timetable</span>
+                        </div>
+                        <div class="description">View teacher's class timetable and schedule</div>
+                    </div>
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method">POST</span>
+                            <span class="path">/api/teachers/logout</span>
+                        </div>
+                        <div class="description">Teacher logout (client-side token removal)</div>
+                    </div>
+                </div>
+
+                <!-- Admin Endpoints -->
+                <div class="endpoint-category">
+                    <div class="category-title">👨‍💼 Admin Only (Admin JWT Required)</div>
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method">POST</span>
+                            <span class="path">/api/students/admin/add-student</span>
+                        </div>
+                        <div class="description">Add new student to the system with hashed password</div>
+                    </div>
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method">POST</span>
+                            <span class="path">/api/students/admin/update-password</span>
+                        </div>
+                        <div class="description">Update existing student's password with proper hashing</div>
+                    </div>
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method">POST</span>
+                            <span class="path">/api/admin/logout</span>
+                        </div>
+                        <div class="description">Admin logout (client-side token removal)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Stack -->
+    <section id="tech" class="content-section">
+        <div class="container">
+            <h2>
+                <div class="section-icon"></div>
+                Technology Stack
+            </h2>
+            <div class="tech-list">
+                <div class="tech">Node.js</div>
+                <div class="tech">Express.js</div>
+                <div class="tech">MongoDB</div>
+                <div class="tech">JWT Auth</div>
+                <div class="tech">REST API</div>
+                <div class="tech">bcrypt</div>
+            </div>
+            <div class="version-info">
+                <p>API Version <span class="port-highlight">1.0</span> • Production Environment</p>
+                <p>Port <span class="port-highlight" id="port">10000</span> • High Availability</p>
+                <p>🔐 JWT Authentication for Students, Teachers & Admins</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- htop Output Section -->
+    <section id="htop" class="htop-section">
+        <div class="container">
+            <div class="htop-header">
+                <h2 class="htop-title">
+                    <i class="fas fa-server"></i> Server Status Monitor
+                </h2>
+                <button class="htop-refresh" id="refresh-htop">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+            
+            <div class="htop-stats">
+                <div class="htop-stat">
+                    <div class="htop-stat-label">CPU Usage</div>
+                    <div class="htop-stat-value" id="cpu-usage">24%</div>
+                    <div class="htop-bar">
+                        <div class="htop-bar-fill cpu-bar" id="cpu-bar" style="width: 24%"></div>
+                    </div>
+                </div>
+                
+                <div class="htop-stat">
+                    <div class="htop-stat-label">Memory Usage</div>
+                    <div class="htop-stat-value" id="memory-usage">62%</div>
+                    <div class="htop-bar">
+                        <div class="htop-bar-fill memory-bar" id="memory-bar" style="width: 62%"></div>
+                    </div>
+                </div>
+                
+                <div class="htop-stat">
+                    <div class="htop-stat-label">Disk Usage</div>
+                    <div class="htop-stat-value" id="disk-usage">38%</div>
+                    <div class="htop-bar">
+                        <div class="htop-bar-fill disk-bar" id="disk-bar" style="width: 38%"></div>
+                    </div>
+                </div>
+
+                <div class="htop-stat">
+                    <div class="htop-stat-label">Network Traffic</div>
+                    <div class="htop-stat-value" id="network-usage">1.2 MB/s</div>
+                    <div class="htop-bar">
+                        <div class="htop-bar-fill network-bar" id="network-bar" style="width: 45%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="htop-terminal" id="htop-output">
+                <!-- htop output will be generated here by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Professional Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>API Documentation</h3>
+                    <ul>
+                        <li><a href="#endpoints">Endpoints</a></li>
+                        <li><a href="#auth">Authentication</a></li>
+                        <li><a href="#rate-limits">Rate Limits</a></li>
+                        <li><a href="#examples">Examples</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="https://nodejs.org" target="_blank">Node.js</a></li>
+                        <li><a href="https://expressjs.com" target="_blank">Express.js</a></li>
+                        <li><a href="https://mongodb.com" target="_blank">MongoDB</a></li>
+                        <li><a href="#changelog">Changelog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#contact">Contact Us</a></li>
+                        <li><a href="#status">Status Page</a></li>
+                        <li><a href="#community">Community</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 Student Portal API • Built for Educational Excellence</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = themeToggle.querySelector('i');
+        
+        function toggleTheme() {
+            const body = document.body;
+            
+            if (body.getAttribute('data-theme') === 'light') {
+                body.removeAttribute('data-theme');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+                localStorage.setItem('theme', 'dark');
+                themeIcon.className = 'fas fa-moon';
+            } else {
+                body.setAttribute('data-theme', 'light');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+                localStorage.setItem('theme', 'light');
+                themeIcon.className = 'fas fa-sun';
+            }
+        }
+        
+        // Load saved theme on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme');
+            
+            if (savedTheme === 'light') {
+                document.body.setAttribute('data-theme', 'light');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+            } else {
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+            }
+            
+            // Get the actual port from the URL
+            const port = window.location.port || (window.location.protocol === 'https:' ? 443 : 80);
+            document.getElementById('port').textContent = port;
+            
+            // Initialize htop simulation
+            updateHtopStats();
+            generateHtopOutput();
+            
+            // Start periodic updates
+            setInterval(updateHtopStats, 2000);
+            setInterval(generateHtopOutput, 3000);
+        });
+
+        // Add event listener to theme toggle button
+        themeToggle.addEventListener('click', toggleTheme);
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // htop simulation functionality
+        function updateHtopStats() {
+            // Generate realistic values for demonstration
+            const cpuUsage = Math.floor(Math.random() * 30) + 10;
+            const memoryUsage = Math.floor(Math.random() * 40) + 30;
+            const diskUsage = Math.floor(Math.random() * 30) + 20;
+            const networkUsage = (Math.random() * 2 + 0.5).toFixed(1);
+            
+            // Update the display
+            document.getElementById('cpu-usage').textContent = cpuUsage + '%';
+            document.getElementById('memory-usage').textContent = memoryUsage + '%';
+            document.getElementById('disk-usage').textContent = diskUsage + '%';
+            document.getElementById('network-usage').textContent = networkUsage + ' MB/s';
+            
+            // Update the progress bars
+            document.getElementById('cpu-bar').style.width = cpuUsage + '%';
+            document.getElementById('memory-bar').style.width = memoryUsage + '%';
+            document.getElementById('disk-bar').style.width = diskUsage + '%';
+            document.getElementById('network-bar').style.width = (networkUsage / 2.5 * 100) + '%';
+        }
+
+        // Generate htop-like output
+        function generateHtopOutput() {
+            const processes = [
+                {pid: 1234, user: 'node', pri: 20, ni: 0, virt: '1.2G', res: '180M', shr: '35M', state: 'S', cpu: (Math.random()*30+10).toFixed(1), mem: (Math.random()*5+2).toFixed(1), time: '12:34.56', command: '/usr/bin/node app.js'},
+                {pid: 2345, user: 'mongod', pri: 20, ni: 0, virt: '2.5G', res: '890M', shr: '45M', state: 'S', cpu: (Math.random()*15+5).toFixed(1), mem: (Math.random()*20+15).toFixed(1), time: '45:12.34', command: '/usr/bin/mongod --config /etc/mongod.conf'},
+                {pid: 3457, user: 'nginx', pri: 20, ni: 0, virt: '125M', res: '12M', shr: '8M', state: 'S', cpu: (Math.random()*5+1).toFixed(1), mem: (Math.random()*1+0.2).toFixed(1), time: '0:12.34', command: 'nginx: worker process'},
+                {pid: 4568, user: 'sshd', pri: 20, ni: 0, virt: '85M', res: '4M', shr: '3M', state: 'S', cpu: (Math.random()*2).toFixed(1), mem: (Math.random()*0.5).toFixed(1), time: '0:01.23', command: 'sshd: admin [priv]'},
+                {pid: 5679, user: 'systemd', pri: 20, ni: 0, virt: '50M', res: '3M', shr: '2M', state: 'S', cpu: (Math.random()*1).toFixed(1), mem: (Math.random()*0.5).toFixed(1), time: '0:45.12', command: '/lib/systemd/systemd --user'},
+                {pid: 6780, user: 'redis', pri: 20, ni: 0, virt: '95M', res: '8M', shr: '4M', state: 'S', cpu: (Math.random()*3+1).toFixed(1), mem: (Math.random()*1+0.1).toFixed(1), time: '2:34.56', command: '/usr/bin/redis-server 127.0.0.1:6379'}
+            ];
+            
+            // Generate CPU core usage
+            let cpuCores = '';
+            const coreCount = 4;
+            for (let i = 1; i <= coreCount; i++) {
+                const usage = Math.floor(Math.random() * 40) + 10;
+                cpuCores += `  ${i}  [${'|'.repeat(Math.floor(usage/5))}${' '.repeat(20 - Math.floor(usage/5))}${usage}%]\n`;
+            }
+            
+            // Generate memory usage
+            const memTotal = 4.0;
+            const memUsed = (Math.random() * 1.5 + 2.5).toFixed(1);
+            const memPercent = Math.floor((memUsed / memTotal) * 100);
+            const memBar = '|'.repeat(Math.floor(memPercent/5)) + '.'.repeat(20 - Math.floor(memPercent/5));
+            
+            // Generate swap usage
+            const swapTotal = 2.0;
+            const swapUsed = (Math.random() * 0.5 + 0.3).toFixed(1);
+            const swapPercent = Math.floor((swapUsed / swapTotal) * 100);
+            const swapBar = '|'.repeat(Math.floor(swapPercent/5)) + '.'.repeat(20 - Math.floor(swapPercent/5));
+            
+            // Generate load average
+            const load1 = (Math.random() * 2 + 0.5).toFixed(2);
+            const load5 = (Math.random() * 1.5 + 0.5).toFixed(2);
+            const load15 = (Math.random() * 1 + 0.5).toFixed(2);
+            
+            // Generate uptime
+            const days = Math.floor(Math.random() * 15);
+            const hours = Math.floor(Math.random() * 24);
+            const mins = Math.floor(Math.random() * 60);
+            
+            // Build the htop output
+            let output = '  PID USER      PRI  NI  VIRT   RES   SHR S CPU% MEM%   TIME+  Command\n';
+            
+            processes.forEach(proc => {
+                output += `${proc.pid.toString().padEnd(5)} ${proc.user.padEnd(8)} ${proc.pri.toString().padEnd(4)} ${proc.ni.toString().padEnd(3)} ${proc.virt.padEnd(6)} ${proc.res.padEnd(6)} ${proc.shr.padEnd(5)} ${proc.state} ${proc.cpu.toString().padEnd(4)} ${proc.mem.toString().padEnd(4)} ${proc.time}  ${proc.command}\n`;
+            });
+            
+            output += '\n';
+            output += cpuCores;
+            output += `  Mem[${memBar}${memUsed}G/${memTotal}G]\n`;
+            output += `  Swp[${swapBar}${swapUsed}G/${swapTotal}G]\n\n`;
+            output += `  Load average: ${load1} ${load5} ${load15} | Uptime: ${days} days, ${hours}:${mins.toString().padStart(2, '0')}:${Math.floor(Math.random() * 60).toString().padStart(2, '0')}`;
+            
+            document.getElementById('htop-output').textContent = output;
+        }
+
+        // Add event listener to refresh button
+        document.getElementById('refresh-htop').addEventListener('click', function() {
+            updateHtopStats();
+            generateHtopOutput();
+        });
+    </script>
+</body>
+</html>
