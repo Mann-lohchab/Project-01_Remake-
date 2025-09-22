@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { LoginCredentials, Student, Teacher, Admin } from '../types';
 
-const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -94,6 +94,7 @@ export const studentAPI = {
     const response = await api.get(`/students/Notice/${studentID}`);
     return response.data;
   },
+  
 
   // Get calendar events
   getCalendar: async (studentID: string) => {

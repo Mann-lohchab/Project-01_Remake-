@@ -1,0 +1,5 @@
+backend/node_modules
+frontend/node_modules
+backend/JWT_AUTH_MIGRATION.md 
+
+frontend/dist

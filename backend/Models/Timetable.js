@@ -11,7 +11,7 @@ const  periodSchema = new mongoose.Schema({
     //     type: String  // or ObjectId if you have a Teacher collection
     // },
     startTime: {
-        type: String, // e.g., "09:00"
+        type: String, // e.g., "11:00"
         required: true
     },
     endTime: {

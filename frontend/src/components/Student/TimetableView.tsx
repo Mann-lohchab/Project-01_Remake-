@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { studentAPI } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
-import { Student } from '../../types';
 
 interface TimetableEntry {
   _id: string;
-  classId?: string;
+  studentID: string; // Changed from classId to match backend pattern
   day: 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday';
   subject: string;
   teacher: string;
@@ -20,44 +19,88 @@ const TimetableView: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
 
-  useEffect(() => {
-    const fetchTimetable = async () => {
-      if (!user || user.role !== 'student') return;
-      const student = user as Student;
-      
-      try {
-        setLoading(true);
-        const data = await studentAPI.getTimetable(student.studentID);
-        setTimetable(Array.isArray(data) ? data : data.timetable || []);
-      } catch (err: any) {
-        setError(err.response?.data?.message || 'Failed to fetch timetable data');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const getStudentId = () => {
+    return (user as any)?.studentID ||(user as any)?.studentId ||(user as any)?.student_id || (user as any)?.id;
+  };
 
+  const fetchTimetable = async () => {
+    if (!user || user.role !== 'student') {
+      setError('User not authenticated as student');
+      setLoading(false);
+      return;
+    }
+
+    const studentId = getStudentId();
+    if (!studentId) {
+      setError('Student ID not found');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const response = await studentAPI.getTimetable(studentId);
+      
+      // Handle different response formats
+      if (Array.isArray(response)) {
+        setTimetable(response);
+      } else if (response.timetable && Array.isArray(response.timetable)) {
+        setTimetable(response.timetable);
+      } else if (response.data && Array.isArray(response.data)) {
+        setTimetable(response.data);
+      } else {
+        setTimetable([]);
+      }
+
+    } catch (err: any) {
+      console.error('Error fetching timetable:', err);
+      
+      if (err.response?.status === 404) {
+        setTimetable([]);
+        setError('No timetable available at this time');
+      } else if (err.response?.status === 500) {
+        setError('Server error while fetching timetable data');
+      } else {
+        setError(err.response?.data?.message || 'Failed to fetch timetable data');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchTimetable();
   }, [user]);
 
   if (loading) {
-    return React.createElement('div', { 
-      style: { 
+    return (
+      <div style={{ 
         display: 'flex', 
         justifyContent: 'center', 
         alignItems: 'center', 
-        height: '200px' 
-      } 
-    }, 'Loading timetable...');
-  }
-
-  if (error) {
-    return React.createElement('div', { 
-      style: { 
-        color: '#dc2626', 
-        padding: '20px', 
-        textAlign: 'center' 
-      } 
-    }, `Error: ${error}`);
+        height: '200px',
+        flexDirection: 'column',
+        gap: '10px'
+      }}>
+        <div style={{
+          border: '4px solid #f3f3f3',
+          borderTop: '4px solid #6366f1',
+          borderRadius: '50%',
+          width: '40px',
+          height: '40px',
+          animation: 'spin 1s linear infinite'
+        }}></div>
+        <div>Loading timetable...</div>
+        <style>{`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
+      </div>
+    );
   }
 
   const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -109,228 +152,285 @@ const TimetableView: React.FC = () => {
     return colors[Math.abs(hash) % colors.length];
   };
 
-  return React.createElement('div', null,
-    React.createElement('div', { 
-      style: { 
+  return (
+    <div>
+      {/* Error Display */}
+      {error && (
+        <div style={{ 
+          color: '#dc2626', 
+          padding: '15px', 
+          textAlign: 'center',
+          backgroundColor: '#fee2e2',
+          borderRadius: '8px',
+          border: '1px solid #fca5a5',
+          marginBottom: '20px'
+        }}>
+          <strong>Notice:</strong> {error}
+        </div>
+      )}
+
+      {/* Today's Schedule Overview */}
+      <div style={{ 
         background: 'white', 
         padding: '20px', 
         borderRadius: '8px', 
         boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
         marginBottom: '20px'
-      }
-    },
-      React.createElement('h3', { style: { color: '#6366f1', marginBottom: '15px' } }, 'Today\'s Schedule'),
-      React.createElement('div', { 
-        style: { 
+      }}>
+        <h3 style={{ color: '#6366f1', marginBottom: '15px' }}>Today's Schedule</h3>
+        
+        <div style={{ 
           display: 'grid', 
           gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', 
           gap: '15px',
           textAlign: 'center',
           marginBottom: '20px'
-        }
-      },
-        React.createElement('div', null,
-          React.createElement('div', { 
-            style: { 
-              fontSize: '20px', 
-              fontWeight: 'bold', 
-              color: '#10b981' 
-            } 
-          }, currentClass ? '📚' : '⏰'),
-          React.createElement('div', { style: { fontSize: '12px', color: '#6b7280' } }, 
-            currentClass ? 'Current Class' : 'No Current Class'
-          ),
-          currentClass && React.createElement('div', { 
-            style: { 
-              fontSize: '14px', 
-              fontWeight: '600', 
-              color: '#10b981' 
-            } 
-          }, currentClass.subject)
-        ),
-        React.createElement('div', null,
-          React.createElement('div', { 
-            style: { 
-              fontSize: '20px', 
-              fontWeight: 'bold', 
-              color: '#3b82f6' 
-            } 
-          }, nextClass ? '⏭️' : '✅'),
-          React.createElement('div', { style: { fontSize: '12px', color: '#6b7280' } }, 
-            nextClass ? 'Next Class' : 'No More Classes'
-          ),
-          nextClass && React.createElement('div', { 
-            style: { 
-              fontSize: '14px', 
-              fontWeight: '600', 
-              color: '#3b82f6' 
-            } 
-          }, `${nextClass.subject} at ${nextClass.startTime}`)
-        ),
-        React.createElement('div', null,
-          React.createElement('div', { 
-            style: { 
+        }}>
+          <div>
+            <div style={{ 
               fontSize: '24px', 
               fontWeight: 'bold', 
-              color: '#f59e0b' 
-            } 
-          }, todaySchedule.length),
-          React.createElement('div', { style: { fontSize: '12px', color: '#6b7280' } }, 'Classes Today')
-        )
-      ),
+              color: currentClass ? '#10b981' : '#6b7280'
+            }}>
+              {currentClass ? '📚' : '⏰'}
+            </div>
+            <div style={{ fontSize: '12px', color: '#6b7280', marginBottom: '5px' }}>
+              {currentClass ? 'Current Class' : 'No Current Class'}
+            </div>
+            {currentClass && (
+              <div style={{ 
+                fontSize: '14px', 
+                fontWeight: '600', 
+                color: '#10b981'
+              }}>
+                {currentClass.subject}
+              </div>
+            )}
+          </div>
 
-      // Today's Classes
-      todaySchedule.length > 0 && React.createElement('div', null,
-        React.createElement('h5', { style: { marginBottom: '10px' } }, 'Today\'s Classes'),
-        React.createElement('div', { 
-          style: { 
-            display: 'flex', 
-            gap: '10px',
-            overflowX: 'auto',
-            paddingBottom: '10px'
-          }
-        },
-          ...todaySchedule.map((entry, index) => 
-            React.createElement('div', { 
-              key: `${entry._id}-${index}`,
-              style: { 
-                minWidth: '160px',
-                padding: '12px', 
-                borderRadius: '8px',
-                backgroundColor: getSubjectColor(entry.subject) + '10',
-                border: `2px solid ${getSubjectColor(entry.subject)}20`,
-                borderLeft: `4px solid ${getSubjectColor(entry.subject)}`
-              }
-            },
-              React.createElement('div', { 
-                style: { 
-                  fontWeight: '600', 
-                  color: getSubjectColor(entry.subject),
-                  marginBottom: '5px'
-                } 
-              }, entry.subject),
-              React.createElement('div', { 
-                style: { 
-                  fontSize: '12px', 
-                  color: '#6b7280',
-                  marginBottom: '3px' 
-                } 
-              }, `${entry.startTime} - ${entry.endTime}`),
-              React.createElement('div', { 
-                style: { 
-                  fontSize: '12px', 
-                  color: '#6b7280' 
-                } 
-              }, entry.teacher),
-              entry.room && React.createElement('div', { 
-                style: { 
-                  fontSize: '11px', 
-                  color: '#6b7280',
-                  marginTop: '3px'
-                } 
-              }, `Room: ${entry.room}`)
-            )
-          )
-        )
-      )
-    ),
+          <div>
+            <div style={{ 
+              fontSize: '24px', 
+              fontWeight: 'bold', 
+              color: nextClass ? '#3b82f6' : '#6b7280'
+            }}>
+              {nextClass ? '⏭️' : '✅'}
+            </div>
+            <div style={{ fontSize: '12px', color: '#6b7280', marginBottom: '5px' }}>
+              {nextClass ? 'Next Class' : 'No More Classes'}
+            </div>
+            {nextClass && (
+              <div style={{ 
+                fontSize: '14px', 
+                fontWeight: '600', 
+                color: '#3b82f6'
+              }}>
+                {nextClass.subject} at {nextClass.startTime}
+              </div>
+            )}
+          </div>
 
-    React.createElement('div', { 
-      style: { 
+          <div>
+            <div style={{ 
+              fontSize: '24px', 
+              fontWeight: 'bold', 
+              color: '#f59e0b'
+            }}>
+              {todaySchedule.length}
+            </div>
+            <div style={{ fontSize: '12px', color: '#6b7280' }}>Classes Today</div>
+          </div>
+        </div>
+
+        {/* Today's Classes Horizontal Scroll */}
+        {todaySchedule.length > 0 && (
+          <div>
+            <h5 style={{ marginBottom: '15px', color: '#374151' }}>Today's Classes</h5>
+            <div style={{ 
+              display: 'flex', 
+              gap: '15px',
+              overflowX: 'auto',
+              paddingBottom: '10px'
+            }}>
+              {todaySchedule.map((entry, index) => (
+                <div 
+                  key={`${entry._id}-${index}`}
+                  style={{ 
+                    minWidth: '180px',
+                    padding: '15px', 
+                    borderRadius: '8px',
+                    backgroundColor: `${getSubjectColor(entry.subject)}10`,
+                    border: `2px solid ${getSubjectColor(entry.subject)}20`,
+                    borderLeft: `4px solid ${getSubjectColor(entry.subject)}`
+                  }}
+                >
+                  <div style={{ 
+                    fontWeight: '600', 
+                    color: getSubjectColor(entry.subject),
+                    marginBottom: '8px',
+                    fontSize: '16px'
+                  }}>
+                    {entry.subject}
+                  </div>
+                  <div style={{ 
+                    fontSize: '12px', 
+                    color: '#6b7280',
+                    marginBottom: '4px' 
+                  }}>
+                    {entry.startTime} - {entry.endTime}
+                  </div>
+                  <div style={{ 
+                    fontSize: '12px', 
+                    color: '#6b7280',
+                    marginBottom: '4px'
+                  }}>
+                    {entry.teacher}
+                  </div>
+                  {entry.room && (
+                    <div style={{ 
+                      fontSize: '11px', 
+                      color: '#6b7280',
+                      backgroundColor: `${getSubjectColor(entry.subject)}05`,
+                      padding: '2px 6px',
+                      borderRadius: '4px',
+                      marginTop: '4px'
+                    }}>
+                      Room: {entry.room}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Weekly Timetable */}
+      <div style={{ 
         background: 'white', 
         padding: '20px', 
         borderRadius: '8px', 
         boxShadow: '0 2px 4px rgba(0,0,0,0.1)' 
-      }
-    },
-      React.createElement('h4', { style: { marginBottom: '20px' } }, 'Weekly Timetable'),
-      timetable.length === 0 ? 
-        React.createElement('div', { 
-          style: { 
+      }}>
+        <h4 style={{ marginBottom: '20px', color: '#374151' }}>Weekly Timetable</h4>
+        
+        {timetable.length === 0 ? (
+          <div style={{ 
             textAlign: 'center', 
             padding: '40px',
+            backgroundColor: '#f9fafb',
+            borderRadius: '8px',
             color: '#6b7280' 
-          }
-        },
-          React.createElement('div', { style: { fontSize: '48px', marginBottom: '10px' } }, '📅'),
-          React.createElement('div', { style: { fontSize: '18px', marginBottom: '5px' } }, 'No timetable available'),
-          React.createElement('div', { style: { fontSize: '14px' } }, 'Your class schedule will appear here')
-        ) :
-        React.createElement('div', { style: { overflowX: 'auto' } },
-          React.createElement('table', { 
-            style: { 
+          }}>
+            <div style={{ fontSize: '48px', marginBottom: '10px' }}>📅</div>
+            <div style={{ fontSize: '18px', marginBottom: '5px', color: '#374151' }}>
+              No timetable available
+            </div>
+            <div style={{ fontSize: '14px' }}>
+              Your class schedule will appear here once it's uploaded
+            </div>
+          </div>
+        ) : (
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ 
               width: '100%', 
               minWidth: '800px',
-              borderCollapse: 'collapse'
-            }
-          },
-            React.createElement('thead', null,
-              React.createElement('tr', null,
-                React.createElement('th', { 
-                  style: { 
-                    padding: '12px', 
+              borderCollapse: 'collapse',
+              fontSize: '13px'
+            }}>
+              <thead>
+                <tr>
+                  <th style={{ 
+                    padding: '12px 8px', 
                     backgroundColor: '#f9fafb',
                     border: '1px solid #e5e7eb',
                     fontWeight: '600',
-                    textAlign: 'left'
-                  }
-                }, 'Day'),
-                ...timeSlots.map(time => 
-                  React.createElement('th', { 
-                    key: time,
-                    style: { 
-                      padding: '12px', 
-                      backgroundColor: '#f9fafb',
-                      border: '1px solid #e5e7eb',
-                      fontWeight: '600',
-                      textAlign: 'center',
-                      fontSize: '12px'
-                    }
-                  }, time)
-                )
-              )
-            ),
-            React.createElement('tbody', null,
-              ...daysOfWeek.map(day => {
-                const daySchedule = getDaySchedule(day);
-                return React.createElement('tr', { key: day },
-                  React.createElement('td', { 
-                    style: { 
-                      padding: '12px', 
-                      border: '1px solid #e5e7eb',
-                      fontWeight: '600',
-                      backgroundColor: '#fafafa'
-                    }
-                  }, day.substring(0, 3)),
-                  ...timeSlots.map(time => {
-                    const classAtTime = daySchedule.find(entry => 
-                      entry.startTime <= time && entry.endTime > time
-                    );
-                    
-                    return React.createElement('td', { 
-                      key: `${day}-${time}`,
-                      style: { 
-                        padding: '8px', 
+                    textAlign: 'left',
+                    minWidth: '80px'
+                  }}>
+                    Day
+                  </th>
+                  {timeSlots.map(time => (
+                    <th 
+                      key={time}
+                      style={{ 
+                        padding: '12px 6px', 
+                        backgroundColor: '#f9fafb',
                         border: '1px solid #e5e7eb',
+                        fontWeight: '600',
                         textAlign: 'center',
-                        backgroundColor: classAtTime ? getSubjectColor(classAtTime.subject) + '10' : 'white',
-                        fontSize: '11px'
-                      }
-                    }, classAtTime ? 
-                      React.createElement('div', { 
-                        style: { 
-                          fontWeight: '600',
-                          color: getSubjectColor(classAtTime.subject)
-                        } 
-                      }, classAtTime.subject) : ''
-                    );
-                  })
-                );
-              })
-            )
-          )
-        )
-    )
+                        fontSize: '12px',
+                        minWidth: '70px'
+                      }}
+                    >
+                      {time}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {daysOfWeek.map(day => {
+                  const daySchedule = getDaySchedule(day);
+                  return (
+                    <tr key={day}>
+                      <td style={{ 
+                        padding: '12px 8px', 
+                        border: '1px solid #e5e7eb',
+                        fontWeight: '600',
+                        backgroundColor: '#fafafa',
+                        verticalAlign: 'top'
+                      }}>
+                        {day.substring(0, 3)}
+                      </td>
+                      {timeSlots.map(time => {
+                        const classAtTime = daySchedule.find(entry => 
+                          entry.startTime <= time && entry.endTime > time
+                        );
+                        
+                        return (
+                          <td 
+                            key={`${day}-${time}`}
+                            style={{ 
+                              padding: classAtTime ? '6px 4px' : '8px 4px', 
+                              border: '1px solid #e5e7eb',
+                              textAlign: 'center',
+                              backgroundColor: classAtTime ? `${getSubjectColor(classAtTime.subject)}10` : 'white',
+                              fontSize: '10px',
+                              verticalAlign: 'middle',
+                              position: 'relative'
+                            }}
+                          >
+                            {classAtTime && (
+                              <div style={{ 
+                                fontWeight: '600',
+                                color: getSubjectColor(classAtTime.subject),
+                                lineHeight: '1.2',
+                                marginBottom: '2px'
+                              }}>
+                                {classAtTime.subject}
+                              </div>
+                            )}
+                            {classAtTime && classAtTime.room && (
+                              <div style={{ 
+                                fontSize: '9px',
+                                color: '#6b7280',
+                                opacity: 0.8
+                              }}>
+                                {classAtTime.room}
+                              </div>
+                            )}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 

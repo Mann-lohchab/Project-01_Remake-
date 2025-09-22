@@ -12,7 +12,6 @@ import GradeManagement from './components/Teacher/GradeManagement';
 import NoticeManagement from './components/Teacher/NoticeManagement';
 import CalendarManagement from './components/Teacher/CalendarManagement';
 import StudentsView from './components/Teacher/StudentsView';
-import './App.css';
 
 
 const AdminDashboard: React.FC = () => {
@@ -21,56 +20,31 @@ const AdminDashboard: React.FC = () => {
   return React.createElement(Layout, { title: 'Admin Dashboard', children:
     React.createElement('div', null,
       React.createElement('h2', null, `Welcome, ${user?.firstName}!`),
-      React.createElement('div', { 
-        style: { 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
-          gap: '20px',
-          marginTop: '30px'
-        }
+      React.createElement('div', {
+        className: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-8'
       },
-        React.createElement('div', { 
-          style: { 
-            background: 'white', 
-            padding: '20px', 
-            borderRadius: '8px', 
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)' 
-          }
+        React.createElement('div', {
+          className: 'bg-white p-5 rounded-lg shadow-md'
         },
-          React.createElement('h3', { style: { color: '#3b82f6' } }, 'Manage Students'),
+          React.createElement('h3', { className: 'text-blue-500' }, 'Manage Students'),
           React.createElement('p', null, 'Add, edit, and view students')
         ),
-        React.createElement('div', { 
-          style: { 
-            background: 'white', 
-            padding: '20px', 
-            borderRadius: '8px', 
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)' 
-          }
+        React.createElement('div', {
+          className: 'bg-white p-5 rounded-lg shadow-md'
         },
-          React.createElement('h3', { style: { color: '#10b981' } }, 'Manage Teachers'),
+          React.createElement('h3', { className: 'text-emerald-500' }, 'Manage Teachers'),
           React.createElement('p', null, 'Add, edit, and view teachers')
         ),
-        React.createElement('div', { 
-          style: { 
-            background: 'white', 
-            padding: '20px', 
-            borderRadius: '8px', 
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)' 
-          }
+        React.createElement('div', {
+          className: 'bg-white p-5 rounded-lg shadow-md'
         },
-          React.createElement('h3', { style: { color: '#f59e0b' } }, 'Calendar'),
+          React.createElement('h3', { className: 'text-amber-500' }, 'Calendar'),
           React.createElement('p', null, 'Manage school calendar events')
         ),
-        React.createElement('div', { 
-          style: { 
-            background: 'white', 
-            padding: '20px', 
-            borderRadius: '8px', 
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)' 
-          }
+        React.createElement('div', {
+          className: 'bg-white p-5 rounded-lg shadow-md'
         },
-          React.createElement('h3', { style: { color: '#ef4444' } }, 'Reports'),
+          React.createElement('h3', { className: 'text-red-500' }, 'Reports'),
           React.createElement('p', null, 'View system reports and analytics')
         )
       )

@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { studentAPI } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
-import { Student } from '../../types';
 
 interface CalendarEvent {
   _id: string;
-  studentId?: string;
+  studentID: string; // Changed from studentId to match backend pattern
   title: string;
   description?: string;
   date: string;
@@ -20,44 +19,91 @@ const CalendarView: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
 
-  useEffect(() => {
-    const fetchCalendar = async () => {
-      if (!user || user.role !== 'student') return;
-      const student = user as Student;
-      
-      try {
-        setLoading(true);
-        const data = await studentAPI.getCalendar(student.studentID);
-        setEvents(Array.isArray(data) ? data : data.events || []);
-      } catch (err: any) {
-        setError(err.response?.data?.message || 'Failed to fetch calendar data');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const getStudentId = () => {
+    return (user as any)?.studentID || 
+           (user as any)?.studentId || 
+           (user as any)?.student_id || 
+           (user as any)?.id;
+  };
 
+  const fetchCalendar = async () => {
+    if (!user || user.role !== 'student') {
+      setError('User not authenticated as student');
+      setLoading(false);
+      return;
+    }
+
+    const studentId = getStudentId();
+    if (!studentId) {
+      setError('Student ID not found');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const response = await studentAPI.getCalendar(studentId);
+      
+      // Handle different response formats
+      if (Array.isArray(response)) {
+        setEvents(response);
+      } else if (response.events && Array.isArray(response.events)) {
+        setEvents(response.events);
+      } else if (response.data && Array.isArray(response.data)) {
+        setEvents(response.data);
+      } else {
+        setEvents([]);
+      }
+
+    } catch (err: any) {
+      console.error('Error fetching calendar:', err);
+      
+      if (err.response?.status === 404) {
+        setEvents([]);
+        setError('No calendar events available at this time');
+      } else if (err.response?.status === 500) {
+        setError('Server error while fetching calendar data');
+      } else {
+        setError(err.response?.data?.message || 'Failed to fetch calendar data');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchCalendar();
   }, [user]);
 
   if (loading) {
-    return React.createElement('div', { 
-      style: { 
+    return (
+      <div style={{ 
         display: 'flex', 
         justifyContent: 'center', 
         alignItems: 'center', 
-        height: '200px' 
-      } 
-    }, 'Loading calendar events...');
-  }
-
-  if (error) {
-    return React.createElement('div', { 
-      style: { 
-        color: '#dc2626', 
-        padding: '20px', 
-        textAlign: 'center' 
-      } 
-    }, `Error: ${error}`);
+        height: '200px',
+        flexDirection: 'column',
+        gap: '10px'
+      }}>
+        <div style={{
+          border: '4px solid #f3f3f3',
+          borderTop: '4px solid #8b5cf6',
+          borderRadius: '50%',
+          width: '40px',
+          height: '40px',
+          animation: 'spin 1s linear infinite'
+        }}></div>
+        <div>Loading calendar events...</div>
+        <style>{`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
+      </div>
+    );
   }
 
   const today = new Date();
@@ -70,6 +116,13 @@ const CalendarView: React.FC = () => {
     const eventDate = new Date(event.date);
     eventDate.setHours(0, 0, 0, 0);
     return eventDate.getTime() === today.getTime();
+  });
+
+  const thisWeekEvents = upcomingEvents.filter(event => {
+    const eventDate = new Date(event.date);
+    const weekFromNow = new Date(today);
+    weekFromNow.setDate(today.getDate() + 7);
+    return eventDate <= weekFromNow;
   });
 
   const getCategoryColor = (category: string) => {
@@ -102,224 +155,264 @@ const CalendarView: React.FC = () => {
     
     if (date.toDateString() === today.toDateString()) return 'Today';
     if (date.toDateString() === tomorrow.toDateString()) return 'Tomorrow';
-    return date.toLocaleDateString();
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: date.getFullYear() !== today.getFullYear() ? 'numeric' : undefined
+    });
   };
 
-  return React.createElement('div', null,
-    React.createElement('div', { 
-      style: { 
+  return (
+    <div>
+      {/* Error Display */}
+      {error && (
+        <div style={{ 
+          color: '#dc2626', 
+          padding: '15px', 
+          textAlign: 'center',
+          backgroundColor: '#fee2e2',
+          borderRadius: '8px',
+          border: '1px solid #fca5a5',
+          marginBottom: '20px'
+        }}>
+          <strong>Notice:</strong> {error}
+        </div>
+      )}
+
+      {/* Calendar Overview */}
+      <div style={{ 
         background: 'white', 
         padding: '20px', 
         borderRadius: '8px', 
         boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
         marginBottom: '20px'
-      }
-    },
-      React.createElement('h3', { style: { color: '#8b5cf6', marginBottom: '15px' } }, 'Calendar Overview'),
-      React.createElement('div', { 
-        style: { 
+      }}>
+        <h3 style={{ color: '#8b5cf6', marginBottom: '15px' }}>Calendar Overview</h3>
+        <div style={{ 
           display: 'grid', 
           gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', 
           gap: '15px',
           textAlign: 'center' 
-        }
-      },
-        React.createElement('div', null,
-          React.createElement('div', { 
-            style: { 
-              fontSize: '24px', 
-              fontWeight: 'bold', 
-              color: '#3b82f6' 
-            } 
-          }, todayEvents.length),
-          React.createElement('div', { style: { fontSize: '14px', color: '#6b7280' } }, 'Today')
-        ),
-        React.createElement('div', null,
-          React.createElement('div', { 
-            style: { 
-              fontSize: '24px', 
-              fontWeight: 'bold', 
-              color: '#f59e0b' 
-            } 
-          }, upcomingEvents.slice(0, 7).length),
-          React.createElement('div', { style: { fontSize: '14px', color: '#6b7280' } }, 'This Week')
-        ),
-        React.createElement('div', null,
-          React.createElement('div', { 
-            style: { 
-              fontSize: '24px', 
-              fontWeight: 'bold', 
-              color: '#10b981' 
-            } 
-          }, events.length),
-          React.createElement('div', { style: { fontSize: '14px', color: '#6b7280' } }, 'Total Events')
-        )
-      )
-    ),
+        }}>
+          <div>
+            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#3b82f6' }}>
+              {todayEvents.length}
+            </div>
+            <div style={{ fontSize: '14px', color: '#6b7280' }}>Today</div>
+          </div>
+          <div>
+            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#f59e0b' }}>
+              {thisWeekEvents.length}
+            </div>
+            <div style={{ fontSize: '14px', color: '#6b7280' }}>This Week</div>
+          </div>
+          <div>
+            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#10b981' }}>
+              {events.length}
+            </div>
+            <div style={{ fontSize: '14px', color: '#6b7280' }}>Total Events</div>
+          </div>
+        </div>
+      </div>
 
-    React.createElement('div', { 
-      style: { 
+      <div style={{ 
         display: 'grid', 
         gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', 
         gap: '20px' 
-      }
-    },
-      // Today's Events
-      React.createElement('div', { 
-        style: { 
+      }}>
+        {/* Today's Events */}
+        <div style={{ 
           background: 'white', 
           padding: '20px', 
           borderRadius: '8px', 
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)' 
-        }
-      },
-        React.createElement('h4', { style: { marginBottom: '15px', color: '#3b82f6' } }, 'Today\'s Events'),
-        todayEvents.length === 0 ? 
-          React.createElement('div', { 
-            style: { 
+        }}>
+          <h4 style={{ marginBottom: '15px', color: '#3b82f6' }}>Today's Events</h4>
+          
+          {todayEvents.length === 0 ? (
+            <div style={{ 
               textAlign: 'center', 
-              padding: '30px',
+              padding: '40px',
+              backgroundColor: '#f9fafb',
+              borderRadius: '8px',
               color: '#6b7280' 
-            }
-          },
-            React.createElement('div', { style: { fontSize: '36px', marginBottom: '10px' } }, '📅'),
-            React.createElement('div', { style: { fontSize: '16px' } }, 'No events today')
-          ) :
-          React.createElement('div', null,
-            ...todayEvents.map((event) => 
-              React.createElement('div', { 
-                key: event._id,
-                style: { 
-                  padding: '15px', 
-                  marginBottom: '10px',
-                  borderRadius: '8px',
-                  backgroundColor: getCategoryColor(event.category) + '10',
-                  borderLeft: `4px solid ${getCategoryColor(event.category)}`
-                }
-              },
-                React.createElement('div', { 
-                  style: { 
+            }}>
+              <div style={{ fontSize: '48px', marginBottom: '10px' }}>📅</div>
+              <div style={{ fontSize: '18px', marginBottom: '5px', color: '#374151' }}>
+                No events today
+              </div>
+              <div style={{ fontSize: '14px' }}>
+                Enjoy your free day!
+              </div>
+            </div>
+          ) : (
+            <div>
+              {todayEvents.map((event) => (
+                <div 
+                  key={event._id}
+                  style={{ 
+                    padding: '15px', 
+                    marginBottom: '10px',
+                    borderRadius: '8px',
+                    backgroundColor: `${getCategoryColor(event.category)}10`,
+                    borderLeft: `4px solid ${getCategoryColor(event.category)}`
+                  }}
+                >
+                  <div style={{ 
                     display: 'flex', 
                     alignItems: 'center', 
                     gap: '10px',
-                    marginBottom: '5px'
-                  }
-                },
-                  React.createElement('span', { style: { fontSize: '18px' } }, getCategoryIcon(event.category)),
-                  React.createElement('div', { style: { fontWeight: '600' } }, event.title)
-                ),
-                event.description && React.createElement('div', { 
-                  style: { 
-                    fontSize: '14px', 
-                    color: '#4b5563',
-                    marginBottom: '5px' 
-                  } 
-                }, event.description),
-                React.createElement('div', { 
-                  style: { 
+                    marginBottom: '8px'
+                  }}>
+                    <span style={{ fontSize: '18px' }}>{getCategoryIcon(event.category)}</span>
+                    <h5 style={{ 
+                      fontWeight: '600', 
+                      margin: 0,
+                      color: '#1f2937'
+                    }}>
+                      {event.title}
+                    </h5>
+                  </div>
+                  
+                  {event.description && (
+                    <div style={{ 
+                      fontSize: '14px', 
+                      color: '#4b5563',
+                      marginBottom: '8px',
+                      lineHeight: '1.4'
+                    }}>
+                      {event.description}
+                    </div>
+                  )}
+                  
+                  <div style={{ 
                     display: 'flex', 
                     justifyContent: 'space-between', 
                     alignItems: 'center' 
-                  }
-                },
-                  event.startTime && event.endTime && React.createElement('div', { 
-                    style: { 
-                      fontSize: '12px', 
-                      color: '#6b7280' 
-                    } 
-                  }, `${event.startTime} - ${event.endTime}`),
-                  React.createElement('span', { 
-                    style: { 
+                  }}>
+                    {event.startTime && event.endTime && (
+                      <div style={{ 
+                        fontSize: '12px', 
+                        color: '#6b7280',
+                        fontWeight: '500'
+                      }}>
+                        {event.startTime} - {event.endTime}
+                      </div>
+                    )}
+                    <span style={{ 
                       padding: '2px 8px',
                       borderRadius: '12px',
                       fontSize: '11px',
                       fontWeight: '500',
                       backgroundColor: getCategoryColor(event.category),
                       color: 'white'
-                    }
-                  }, event.category)
-                )
-              )
-            )
-          )
-      ),
+                    }}>
+                      {event.category}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
-      // Upcoming Events
-      React.createElement('div', { 
-        style: { 
+        {/* Upcoming Events */}
+        <div style={{ 
           background: 'white', 
           padding: '20px', 
           borderRadius: '8px', 
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)' 
-        }
-      },
-        React.createElement('h4', { style: { marginBottom: '15px', color: '#10b981' } }, 'Upcoming Events'),
-        upcomingEvents.length === 0 ? 
-          React.createElement('div', { 
-            style: { 
+        }}>
+          <h4 style={{ marginBottom: '15px', color: '#10b981' }}>Upcoming Events</h4>
+          
+          {upcomingEvents.length === 0 ? (
+            <div style={{ 
               textAlign: 'center', 
-              padding: '30px',
+              padding: '40px',
+              backgroundColor: '#f9fafb',
+              borderRadius: '8px',
               color: '#6b7280' 
-            }
-          },
-            React.createElement('div', { style: { fontSize: '36px', marginBottom: '10px' } }, '🗓️'),
-            React.createElement('div', { style: { fontSize: '16px' } }, 'No upcoming events')
-          ) :
-          React.createElement('div', { 
-            style: { 
+            }}>
+              <div style={{ fontSize: '48px', marginBottom: '10px' }}>🗓️</div>
+              <div style={{ fontSize: '18px', marginBottom: '5px', color: '#374151' }}>
+                No upcoming events
+              </div>
+              <div style={{ fontSize: '14px' }}>
+                Your schedule is clear ahead
+              </div>
+            </div>
+          ) : (
+            <div style={{ 
               maxHeight: '400px', 
               overflowY: 'auto' 
-            }
-          },
-            ...upcomingEvents.slice(0, 10).map((event) => 
-              React.createElement('div', { 
-                key: event._id,
-                style: { 
-                  display: 'flex', 
-                  alignItems: 'center',
-                  padding: '12px 0', 
-                  borderBottom: '1px solid #f3f4f6' 
-                }
-              },
-                React.createElement('div', { 
-                  style: { 
+            }}>
+              {upcomingEvents.slice(0, 10).map((event) => (
+                <div 
+                  key={event._id}
+                  style={{ 
+                    display: 'flex', 
+                    alignItems: 'flex-start',
+                    padding: '12px 0', 
+                    borderBottom: '1px solid #f3f4f6' 
+                  }}
+                >
+                  <div style={{ 
                     minWidth: '40px',
                     textAlign: 'center',
-                    fontSize: '20px'
-                  }
-                }, getCategoryIcon(event.category)),
-                React.createElement('div', { style: { flex: 1, marginLeft: '12px' } },
-                  React.createElement('div', { style: { fontWeight: '500', marginBottom: '2px' } }, event.title),
-                  event.description && React.createElement('div', { 
-                    style: { 
-                      fontSize: '13px', 
-                      color: '#6b7280',
-                      marginBottom: '2px' 
-                    } 
-                  }, event.description),
-                  React.createElement('div', { 
-                    style: { 
+                    fontSize: '20px',
+                    marginTop: '2px'
+                  }}>
+                    {getCategoryIcon(event.category)}
+                  </div>
+                  
+                  <div style={{ flex: 1, marginLeft: '12px' }}>
+                    <div style={{ 
+                      fontWeight: '600', 
+                      marginBottom: '4px',
+                      color: '#1f2937'
+                    }}>
+                      {event.title}
+                    </div>
+                    
+                    {event.description && (
+                      <div style={{ 
+                        fontSize: '13px', 
+                        color: '#6b7280',
+                        marginBottom: '4px',
+                        lineHeight: '1.3'
+                      }}>
+                        {event.description}
+                      </div>
+                    )}
+                    
+                    <div style={{ 
                       fontSize: '12px', 
                       color: getCategoryColor(event.category),
-                      fontWeight: '500'
-                    } 
-                  }, formatDate(event.date))
-                ),
-                React.createElement('span', { 
-                  style: { 
-                    padding: '2px 6px',
-                    borderRadius: '10px',
+                      fontWeight: '600'
+                    }}>
+                      {formatDate(event.date)}
+                      {event.startTime && ` at ${event.startTime}`}
+                    </div>
+                  </div>
+                  
+                  <span style={{ 
+                    padding: '2px 8px',
+                    borderRadius: '12px',
                     fontSize: '10px',
                     fontWeight: '500',
-                    backgroundColor: getCategoryColor(event.category) + '20',
-                    color: getCategoryColor(event.category)
-                  }
-                }, event.category)
-              )
-            )
-          )
-      )
-    )
+                    backgroundColor: `${getCategoryColor(event.category)}20`,
+                    color: getCategoryColor(event.category),
+                    whiteSpace: 'nowrap'
+                  }}>
+                    {event.category}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 
