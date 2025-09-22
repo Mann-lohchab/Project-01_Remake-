@@ -76,29 +76,14 @@ const TimetableView: React.FC = () => {
 
   if (loading) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         height: '200px',
-        flexDirection: 'column',
-        gap: '10px'
+        color: '#CCCCCC'
       }}>
-        <div style={{
-          border: '4px solid #f3f3f3',
-          borderTop: '4px solid #6366f1',
-          borderRadius: '50%',
-          width: '40px',
-          height: '40px',
-          animation: 'spin 1s linear infinite'
-        }}></div>
-        <div>Loading timetable...</div>
-        <style>{`
-          @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-        `}</style>
+        Loading timetable...
       </div>
     );
   }
@@ -156,13 +141,12 @@ const TimetableView: React.FC = () => {
     <div>
       {/* Error Display */}
       {error && (
-        <div style={{ 
-          color: '#dc2626', 
-          padding: '15px', 
+        <div style={{
+          backgroundColor: '#444444',
+          color: '#CCCCCC',
+          padding: '15px',
           textAlign: 'center',
-          backgroundColor: '#fee2e2',
-          borderRadius: '8px',
-          border: '1px solid #fca5a5',
+          borderRadius: '4px',
           marginBottom: '20px'
         }}>
           <strong>Notice:</strong> {error}
@@ -170,14 +154,13 @@ const TimetableView: React.FC = () => {
       )}
 
       {/* Today's Schedule Overview */}
-      <div style={{ 
-        background: 'white', 
-        padding: '20px', 
-        borderRadius: '8px', 
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+      <div style={{
+        backgroundColor: '#444444',
+        padding: '20px',
+        borderRadius: '4px',
         marginBottom: '20px'
       }}>
-        <h3 style={{ color: '#6366f1', marginBottom: '15px' }}>Today's Schedule</h3>
+        <h3 style={{ color: '#CCCCCC', marginBottom: '15px' }}>Today's Schedule</h3>
         
         <div style={{ 
           display: 'grid', 
@@ -306,24 +289,22 @@ const TimetableView: React.FC = () => {
       </div>
 
       {/* Weekly Timetable */}
-      <div style={{ 
-        background: 'white', 
-        padding: '20px', 
-        borderRadius: '8px', 
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)' 
+      <div style={{
+        backgroundColor: '#444444',
+        padding: '20px',
+        borderRadius: '4px'
       }}>
-        <h4 style={{ marginBottom: '20px', color: '#374151' }}>Weekly Timetable</h4>
-        
+        <h4 style={{ marginBottom: '20px', color: '#CCCCCC' }}>Weekly Timetable</h4>
+
         {timetable.length === 0 ? (
-          <div style={{ 
-            textAlign: 'center', 
+          <div style={{
+            textAlign: 'center',
             padding: '40px',
-            backgroundColor: '#f9fafb',
-            borderRadius: '8px',
-            color: '#6b7280' 
+            backgroundColor: '#555555',
+            borderRadius: '4px',
+            color: '#CCCCCC'
           }}>
-            <div style={{ fontSize: '48px', marginBottom: '10px' }}>📅</div>
-            <div style={{ fontSize: '18px', marginBottom: '5px', color: '#374151' }}>
+            <div style={{ fontSize: '18px', marginBottom: '5px' }}>
               No timetable available
             </div>
             <div style={{ fontSize: '14px' }}>

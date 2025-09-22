@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { authAPI } from '../../services/api';
 import { LoginCredentials } from '../../types';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import { GraduationCap, UserCheck, Shield, AlertCircle, Loader2 } from 'lucide-react';
 
 interface LoginProps {
   userType: 'student' | 'teacher' | 'admin';
@@ -22,34 +27,40 @@ const Login: React.FC<LoginProps> = ({ userType }) => {
 
     try {
       let response;
+      let userData;
       switch (userType) {
         case 'student':
           response = await authAPI.studentLogin(credentials);
-          login({
+          userData = {
             ...response.user,
-            role: 'student',
+            role: 'student' as const,
             id: credentials.id
-          }, response.token);
+          };
           break;
         case 'teacher':
           response = await authAPI.teacherLogin(credentials);
-          login({
+          userData = {
             ...response.user,
-            role: 'teacher',
+            role: 'teacher' as const,
             id: credentials.id
-          }, response.token);
+          };
           break;
         case 'admin':
           response = await authAPI.adminLogin(credentials);
-          login({
+          userData = {
             ...response.user,
-            role: 'admin',
+            role: 'admin' as const,
             id: credentials.id
-          }, response.token);
+          };
           break;
       }
 
+      // Login synchronously with sessionStorage
+      login(userData, response.token);
+
+      // Navigate immediately since AuthContext handles loading state
       navigate(`/${userType}-dashboard`);
+
     } catch (error: any) {
       console.error('Login error:', error);
       setError(error.response?.data?.message || 'Login failed. Please check your credentials.');
@@ -76,58 +87,125 @@ const Login: React.FC<LoginProps> = ({ userType }) => {
     }
   };
 
-  return React.createElement('div', { className: 'flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-5' },
-    React.createElement('div', { className: 'bg-white rounded-lg shadow-lg p-10 w-full max-w-md' },
-      React.createElement('h2', { className: 'text-center mb-8 text-gray-800 text-2xl font-semibold' },
-        userType.charAt(0).toUpperCase() + userType.slice(1) + ' Login'
-      ),
+  const getIcon = () => {
+    switch (userType) {
+      case 'student':
+        return <GraduationCap className="h-8 w-8 text-blue-500" />;
+      case 'teacher':
+        return <UserCheck className="h-8 w-8 text-emerald-500" />;
+      case 'admin':
+        return <Shield className="h-8 w-8 text-amber-500" />;
+    }
+  };
 
-      error && React.createElement('div', { className: 'bg-red-50 text-red-600 p-3 rounded mb-5 text-center text-sm' }, error),
+  const getColorScheme = () => {
+    switch (userType) {
+      case 'student':
+        return 'border-blue-200 bg-blue-50/50';
+      case 'teacher':
+        return 'border-emerald-200 bg-emerald-50/50';
+      case 'admin':
+        return 'border-amber-200 bg-amber-50/50';
+    }
+  };
 
-      React.createElement('form', { onSubmit: handleSubmit, className: 'flex flex-col gap-5' },
-        React.createElement('div', { className: 'flex flex-col' },
-          React.createElement('label', { htmlFor: 'id', className: 'mb-2 text-gray-700 font-medium' }, getIdLabel()),
-          React.createElement('input', {
-            type: 'text',
-            id: 'id',
-            name: 'id',
-            value: credentials.id,
-            onChange: handleInputChange,
-            className: 'p-3 border border-gray-300 rounded text-base transition-colors focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10',
-            placeholder: `Enter your ${getIdLabel().toLowerCase()}`,
-            required: true
-          })
-        ),
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-warm-950/20 flex items-center justify-center p-4">
+      <Card className={`w-full max-w-md ${getColorScheme()}`}>
+        <CardHeader className="text-center space-y-4">
+          <div className="mx-auto p-3 bg-primary/10 rounded-full w-fit">
+            {getIcon()}
+          </div>
+          <div>
+            <CardTitle className="text-2xl font-bold text-foreground">
+              {userType.charAt(0).toUpperCase() + userType.slice(1)} Login
+            </CardTitle>
+            <CardDescription className="text-muted-foreground">
+              Sign in to access your {userType} dashboard
+            </CardDescription>
+          </div>
+        </CardHeader>
 
-        React.createElement('div', { className: 'flex flex-col' },
-          React.createElement('label', { htmlFor: 'password', className: 'mb-2 text-gray-700 font-medium' }, 'Password'),
-          React.createElement('input', {
-            type: 'password',
-            id: 'password',
-            name: 'password',
-            value: credentials.password,
-            onChange: handleInputChange,
-            className: 'p-3 border border-gray-300 rounded text-base transition-colors focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10',
-            placeholder: 'Enter your password',
-            required: true
-          })
-        ),
+        <CardContent className="space-y-6">
+          {error && (
+            <div className="flex items-center space-x-2 p-3 bg-destructive/10 border border-destructive/20 rounded-md text-destructive text-sm">
+              <AlertCircle className="h-4 w-4" />
+              <span>{error}</span>
+            </div>
+          )}
 
-        React.createElement('button', {
-          type: 'submit',
-          disabled: loading,
-          className: 'bg-blue-500 text-white p-3 border-none rounded text-base font-semibold cursor-pointer transition-colors mt-3 hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed'
-        }, loading ? 'Logging in...' : 'Login')
-      ),
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="id" className="text-foreground">
+                {getIdLabel()}
+              </Label>
+              <Input
+                id="id"
+                name="id"
+                type="text"
+                value={credentials.id}
+                onChange={handleInputChange}
+                placeholder={`Enter your ${getIdLabel().toLowerCase()}`}
+                required
+                disabled={loading}
+                className="bg-background"
+              />
+            </div>
 
-      React.createElement('div', { className: 'text-center mt-5' },
-        React.createElement('p', { className: 'text-gray-500 mb-3' }, 'Don\'t have an account?'),
-        userType === 'student' && React.createElement('a', {
-          href: '/register',
-          className: 'text-blue-500 no-underline font-medium hover:underline'
-        },)
-      )
-    )
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-foreground">
+                Password
+              </Label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                value={credentials.password}
+                onChange={handleInputChange}
+                placeholder="Enter your password"
+                required
+                disabled={loading}
+                className="bg-background"
+              />
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={loading}
+              size="lg"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                'Sign In'
+              )}
+            </Button>
+          </form>
+
+          <div className="text-center space-y-2">
+            <p className="text-sm text-muted-foreground">
+              {userType === 'student' ? (
+                <>
+                  Don't have an account?{' '}
+                  <Link to="/register" className="text-primary hover:underline font-medium">
+                    Register here
+                  </Link>
+                </>
+              ) : (
+                'Contact your administrator for account access'
+              )}
+            </p>
+            <Link to="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              ← Back to home
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

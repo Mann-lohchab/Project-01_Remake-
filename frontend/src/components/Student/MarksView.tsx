@@ -104,45 +104,29 @@ const MarksView: React.FC = () => {
 
   if (loading) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         height: '200px',
-        flexDirection: 'column',
-        gap: '10px'
+        color: '#CCCCCC'
       }}>
-        <div style={{
-          border: '4px solid #f3f3f3',
-          borderTop: '4px solid #3498db',
-          borderRadius: '50%',
-          width: '40px',
-          height: '40px',
-          animation: 'spin 1s linear infinite'
-        }}></div>
-        <div>Loading marks data...</div>
-        <style>{`
-          @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-        `}</style>
+        Loading marks data...
       </div>
     );
   }
 
   if (error) {
     return (
-      <div style={{ 
-        color: '#dc2626', 
-        padding: '20px', 
+      <div style={{
+        backgroundColor: '#444444',
+        color: '#CCCCCC',
+        padding: '20px',
         textAlign: 'center',
-        backgroundColor: '#fee2e2',
-        borderRadius: '8px',
-        border: '1px solid #fca5a5'
+        borderRadius: '4px'
       }}>
         <strong>Error:</strong> {error}
-        <div style={{ marginTop: '10px', fontSize: '14px', color: '#7f1d1d' }}>
+        <div style={{ marginTop: '10px', fontSize: '14px' }}>
           Please try refreshing the page or contact support if the issue persists.
         </div>
       </div>
@@ -151,15 +135,14 @@ const MarksView: React.FC = () => {
 
   if (!marks || marks.length === 0) {
     return (
-      <div style={{ 
-        textAlign: 'center', 
+      <div style={{
+        textAlign: 'center',
         padding: '40px',
-        backgroundColor: '#f9fafb',
-        borderRadius: '8px',
-        color: '#6b7280'
+        backgroundColor: '#444444',
+        borderRadius: '4px',
+        color: '#CCCCCC'
       }}>
-        <div style={{ fontSize: '48px', marginBottom: '10px' }}>📚</div>
-        <h3 style={{ margin: '0 0 10px 0', color: '#374151' }}>No Marks Available</h3>
+        <h3 style={{ margin: '0 0 10px 0' }}>No Marks Available</h3>
         <p>Your marks will appear here once they are uploaded by your teachers.</p>
       </div>
     );
@@ -171,95 +154,89 @@ const MarksView: React.FC = () => {
   return (
     <div>
       {/* Performance Overview Card */}
-      <div style={{ 
-        background: 'white', 
-        padding: '20px', 
-        borderRadius: '8px', 
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+      <div style={{
+        backgroundColor: '#444444',
+        padding: '20px',
+        borderRadius: '4px',
         marginBottom: '20px'
       }}>
-        <h3 style={{ color: '#f59e0b', marginBottom: '15px' }}>Academic Performance</h3>
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', 
+        <h3 style={{ color: '#CCCCCC', marginBottom: '15px' }}>Academic Performance</h3>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
           gap: '15px',
-          textAlign: 'center' 
+          textAlign: 'center'
         }}>
           <div>
-            <div style={{ 
-              fontSize: '28px', 
-              fontWeight: 'bold', 
-              color: overallPercentage >= 85 ? '#10b981' : 
-                     overallPercentage >= 70 ? '#f59e0b' : '#ef4444' 
+            <div style={{
+              fontSize: '28px',
+              fontWeight: 'bold',
+              color: '#CCCCCC'
             }}>
               {overallPercentage}%
             </div>
-            <div style={{ fontSize: '14px', color: '#6b7280' }}>Overall Performance</div>
+            <div style={{ fontSize: '14px', color: '#999999' }}>Overall Performance</div>
           </div>
           <div>
-            <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#3b82f6' }}>
+            <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#CCCCCC' }}>
               {marks.length}
             </div>
-            <div style={{ fontSize: '14px', color: '#6b7280' }}>Total Assessments</div>
+            <div style={{ fontSize: '14px', color: '#999999' }}>Total Assessments</div>
           </div>
           <div>
-            <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#8b5cf6' }}>
+            <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#CCCCCC' }}>
               {subjectWiseMarks.length}
             </div>
-            <div style={{ fontSize: '14px', color: '#6b7280' }}>Subjects</div>
+            <div style={{ fontSize: '14px', color: '#999999' }}>Subjects</div>
           </div>
         </div>
       </div>
 
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', 
-        gap: '20px' 
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+        gap: '20px'
       }}>
         {/* Subject-wise Performance */}
-        <div style={{ 
-          background: 'white', 
-          padding: '20px', 
-          borderRadius: '8px', 
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)' 
+        <div style={{
+          backgroundColor: '#444444',
+          padding: '20px',
+          borderRadius: '4px'
         }}>
-          <h4 style={{ marginBottom: '15px', color: '#f59e0b' }}>Subject-wise Performance</h4>
+          <h4 style={{ marginBottom: '15px', color: '#CCCCCC' }}>Subject-wise Performance</h4>
           <div>
             {subjectWiseMarks.map((subjectData) => (
-              <div key={subjectData.subject} style={{ 
-                display: 'flex', 
-                justifyContent: 'space-between', 
+              <div key={subjectData.subject} style={{
+                display: 'flex',
+                justifyContent: 'space-between',
                 alignItems: 'center',
-                padding: '12px 0', 
-                borderBottom: '1px solid #f3f4f6' 
+                padding: '12px 0',
+                borderBottom: '1px solid #555555'
               }}>
                 <div>
-                  <div style={{ fontWeight: '500' }}>{subjectData.subject}</div>
-                  <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                  <div style={{ fontWeight: '500', color: '#CCCCCC' }}>{subjectData.subject}</div>
+                  <div style={{ fontSize: '12px', color: '#999999' }}>
                     {subjectData.obtained}/{subjectData.total} ({subjectData.count} tests)
                   </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ 
-                    width: '60px', 
-                    height: '8px', 
-                    backgroundColor: '#e5e7eb', 
+                  <div style={{
+                    width: '60px',
+                    height: '8px',
+                    backgroundColor: '#666666',
                     borderRadius: '4px',
                     overflow: 'hidden'
                   }}>
-                    <div style={{ 
-                      width: `${subjectData.percentage}%`, 
+                    <div style={{
+                      width: `${subjectData.percentage}%`,
                       height: '100%',
-                      backgroundColor: subjectData.percentage >= 85 ? '#10b981' : 
-                                      subjectData.percentage >= 70 ? '#f59e0b' : '#ef4444',
-                      transition: 'width 0.3s ease'
+                      backgroundColor: '#CCCCCC'
                     }}></div>
                   </div>
-                  <span style={{ 
+                  <span style={{
                     fontSize: '14px',
                     fontWeight: '600',
-                    color: subjectData.percentage >= 85 ? '#10b981' : 
-                           subjectData.percentage >= 70 ? '#f59e0b' : '#ef4444'
+                    color: '#CCCCCC'
                   }}>
                     {subjectData.percentage}%
                   </span>
@@ -270,59 +247,53 @@ const MarksView: React.FC = () => {
         </div>
 
         {/* Recent Test Results */}
-        <div style={{ 
-          background: 'white', 
-          padding: '20px', 
-          borderRadius: '8px', 
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)' 
+        <div style={{
+          backgroundColor: '#444444',
+          padding: '20px',
+          borderRadius: '4px'
         }}>
-          <h4 style={{ marginBottom: '15px', color: '#8b5cf6' }}>Recent Test Results</h4>
+          <h4 style={{ marginBottom: '15px', color: '#CCCCCC' }}>Recent Test Results</h4>
           <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
             {marks.slice(0, 8).map((mark) => {
-              const percentage = mark.totalMarks > 0 ? 
+              const percentage = mark.totalMarks > 0 ?
                 Math.round((mark.marksObtained / mark.totalMarks) * 100) : 0;
-              
+
               return (
-                <div key={mark._id} style={{ 
-                  padding: '12px', 
+                <div key={mark._id} style={{
+                  padding: '12px',
                   marginBottom: '10px',
-                  borderRadius: '6px',
-                  backgroundColor: percentage >= 85 ? '#f0fdf4' : 
-                                  percentage >= 70 ? '#fffbeb' : '#fef2f2',
-                  border: `1px solid ${percentage >= 85 ? '#bbf7d0' : 
-                                       percentage >= 70 ? '#fed7aa' : '#fecaca'}`
+                  borderRadius: '4px',
+                  backgroundColor: '#555555'
                 }}>
-                  <div style={{ 
-                    display: 'flex', 
-                    justifyContent: 'space-between', 
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
                     alignItems: 'flex-start',
                     marginBottom: '5px'
                   }}>
                     <div>
-                      <div style={{ fontWeight: '600', fontSize: '14px' }}>{mark.subject}</div>
-                      <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                      <div style={{ fontWeight: '600', fontSize: '14px', color: '#CCCCCC' }}>{mark.subject}</div>
+                      <div style={{ fontSize: '12px', color: '#999999' }}>
                         {mark.examType} - {mark.semester}
                       </div>
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                      <div style={{ 
-                        fontSize: '16px', 
+                      <div style={{
+                        fontSize: '16px',
                         fontWeight: 'bold',
-                        color: percentage >= 85 ? '#059669' : 
-                               percentage >= 70 ? '#d97706' : '#dc2626'
+                        color: '#CCCCCC'
                       }}>
                         {mark.marksObtained}/{mark.totalMarks || 100}
                       </div>
-                      <div style={{ 
-                        fontSize: '12px', 
-                        color: percentage >= 85 ? '#059669' : 
-                               percentage >= 70 ? '#d97706' : '#dc2626' 
+                      <div style={{
+                        fontSize: '12px',
+                        color: '#CCCCCC'
                       }}>
                         {percentage}%
                       </div>
                     </div>
                   </div>
-                  <div style={{ fontSize: '11px', color: '#6b7280' }}>
+                  <div style={{ fontSize: '11px', color: '#999999' }}>
                     Date: {new Date(mark.date).toLocaleDateString()}
                   </div>
                 </div>

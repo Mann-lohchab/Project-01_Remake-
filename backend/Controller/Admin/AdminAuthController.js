@@ -1,6 +1,7 @@
 
 const Admin = require('../../Models/Admin');
 const bcrypt = require('bcrypt');
+const { generateToken } = require('../../utlis/jwtHelpers');
 
 // 🔥 Login Admin
 exports.login = async (req, res) => {
@@ -26,20 +27,26 @@ exports.login = async (req, res) => {
             return res.status(400).json({ message: "Invalid credentials" });
         }
 
-        const sessionExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
-        await Admin.findByIdAndUpdate(admin._id, { sessionExpiry, lastLoginAt: new Date() });
+        // Update last login time
+        await Admin.findByIdAndUpdate(admin._id, { lastLoginAt: new Date() });
 
-        res.cookie('admin_token', admin._id, {
-            httpOnly: true,
-            maxAge: 24 * 60 * 60 * 1000,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict'
+        // Generate JWT token
+        const token = generateToken({
+            adminID: admin.adminID
         });
 
+        // Return user data and token
         res.status(200).json({
-            message: `Welcome ${admin.firstName} ${admin.lastName || ''}`.trim(),
-            adminID: admin.adminID,
-            email: admin.email
+            token: token,
+            user: {
+                id: admin.adminID,
+                adminID: admin.adminID,
+                firstName: admin.firstName,
+                lastName: admin.lastName,
+                email: admin.email,
+                role: 'admin'
+            },
+            expiresIn: '24h'
         });
     } catch (err) {
         console.error("Admin Login Error:", err);

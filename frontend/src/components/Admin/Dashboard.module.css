@@ -1,0 +1,485 @@
+/* Dashboard CSS Module */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #1e1e1e;
+  color: #e0e0e0;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 280px;
+  background: #2a2a2a;
+  border-right: 1px solid #3a3a3a;
+  padding: 2rem 0;
+  position: fixed;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.logo {
+  padding: 0 2rem 2rem 2rem;
+  border-bottom: 1px solid #3a3a3a;
+  margin-bottom: 2rem;
+}
+
+.logo h1 {
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.navSection {
+  margin-bottom: 2rem;
+}
+
+.navSectionTitle {
+  padding: 0.5rem 2rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 1rem;
+}
+
+.navItem {
+  padding: 0.75rem 2rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+.navItem:hover {
+  background: #333;
+  color: #fff;
+}
+
+.navItem.active {
+  background: #333;
+  color: #fff;
+}
+
+.navIcon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+/* Main Content */
+.mainContent {
+  flex: 1;
+  margin-left: 280px;
+  padding: 2rem;
+  background: #1e1e1e;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1rem 0;
+}
+
+.headerLeft h1 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 0.25rem;
+}
+
+.headerLeft p {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.searchBox {
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  color: #fff;
+  width: 250px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.searchBox input {
+  background: transparent;
+  border: none;
+  color: #fff;
+  outline: none;
+  flex: 1;
+}
+
+.searchBox input::placeholder {
+  color: #666;
+}
+
+.searchIcon {
+  width: 16px;
+  height: 16px;
+  color: #666;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #2a2a2a;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #3a3a3a;
+}
+
+.userAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #4a4a4a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+
+/* Stats Cards - Exact colors from image */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.statCard {
+  padding: 1.5rem;
+  border-radius: 12px;
+  color: #000;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.statCard:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+/* Exact colors from the image */
+.statCard.students {
+  background: #FFC107; /* Yellow */
+}
+
+.statCard.teachers {
+  background: #FF6B35; /* Orange-Red */
+}
+
+.statCard.classes {
+  background: #4FC3F7; /* Light Blue */
+}
+
+.statCard.events {
+  background: #66BB6A; /* Green */
+}
+
+.statNumber {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #000;
+}
+
+.statLabel {
+  font-size: 0.9rem;
+  color: #000;
+  opacity: 0.8;
+  margin-bottom: 0.25rem;
+}
+
+.statChange {
+  font-size: 0.8rem;
+  color: #000;
+  opacity: 0.7;
+}
+
+/* Main Dashboard Grid */
+.dashboardGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+
+.panel {
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.panelHeader {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #3a3a3a;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #2a2a2a;
+}
+
+.panelTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.panelContent {
+  padding: 0;
+  background: #2a2a2a;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #3a3a3a;
+}
+
+.table th {
+  background: #333;
+  font-weight: 600;
+  color: #ccc;
+  font-size: 0.85rem;
+}
+
+.table td {
+  color: #e0e0e0;
+  font-size: 0.9rem;
+}
+
+.table tr:hover {
+  background: #333;
+}
+
+.statusBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.statusActive {
+  background: #66BB6A;
+  color: #000;
+}
+
+.statusPending {
+  background: #FFC107;
+  color: #000;
+}
+
+.statusInactive {
+  background: #666;
+  color: #fff;
+}
+
+/* Activity Panel */
+.activityList {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.activityItem {
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #3a3a3a;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.activityItem:last-child {
+  border-bottom: none;
+}
+
+.activityItem:hover {
+  background: #333;
+}
+
+.activityDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 0.5rem;
+  flex-shrink: 0;
+}
+
+.activityNew {
+  background: #66BB6A;
+}
+
+.activityUpdate {
+  background: #4FC3F7;
+}
+
+.activityAlert {
+  background: #FF6B35;
+}
+
+.activityInfo {
+  background: #FFC107;
+}
+
+.activityContent {
+  flex: 1;
+}
+
+.activityText {
+  color: #e0e0e0;
+  margin-bottom: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.activityTime {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.btnPrimary {
+  background: #4FC3F7;
+  color: #000;
+}
+
+.btnPrimary:hover {
+  background: #29B6F6;
+}
+
+.btnSecondary {
+  background: #3a3a3a;
+  color: #ccc;
+  border: 1px solid #4a4a4a;
+}
+
+.btnSecondary:hover {
+  background: #4a4a4a;
+  color: #fff;
+}
+
+/* Additional panels for bottom section */
+.bottomGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.smallPanel {
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.smallPanel h3 {
+  color: #fff;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.metric {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.metricLabel {
+  color: #ccc;
+  font-size: 0.85rem;
+}
+
+.metricValue {
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboardGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    position: relative;
+    height: auto;
+  }
+
+  .mainContent {
+    margin-left: 0;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .headerRight {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .searchBox {
+    width: auto;
+    flex: 1;
+  }
+
+  .bottomGrid {
+    grid-template-columns: 1fr;
+  }
+}

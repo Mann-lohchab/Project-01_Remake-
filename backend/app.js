@@ -42,9 +42,9 @@ app.use(express.urlencoded({ extended: true })); // Added to handle URL-encoded 
 app.use(cookieParser()); // Parse cookies
 // CORS configuration - secure by default
 const corsOrigin = (origin, callback) => {
-  const allowedOrigins = process.env.ALLOWED_ORIGINS ? 
-    process.env.ALLOWED_ORIGINS.split(',') : 
-    ['http://localhost:5000', 'http://localhost:3000', 'http://localhost:3001'];
+  const allowedOrigins = process.env.ALLOWED_ORIGINS ?
+    process.env.ALLOWED_ORIGINS.split(',') :
+    ['http://localhost:5000', 'http://localhost:5001', 'http://localhost:3000', 'http://localhost:3001'];
   
   // Allow requests with no origin (e.g., mobile apps, Postman)
   if (!origin) return callback(null, true);

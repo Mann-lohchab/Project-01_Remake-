@@ -9,7 +9,8 @@ const {
     addStudent,
     deleteStudent,
     getAllStudents,
-    getStudentById
+    getStudentById,
+    updateStudent
 } = require('../../Controller/Admin/StudentController');
 
 // 🌟 Routes
@@ -22,6 +23,9 @@ router.get("/:id", auth.requireAuth, getStudentById);
 
 // Add new student
 router.post("/", auth.requireAuth, addStudent);
+
+// Update student
+router.patch("/:id", auth.requireAuth, updateStudent);
 
 // Delete student
 router.delete("/:id", auth.requireAuth, deleteStudent);

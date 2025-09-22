@@ -1,35 +1,54 @@
 const Admin = require('../Models/Admin');
+const { verifyToken, extractTokenFromHeader } = require('../utlis/jwtHelpers');
 
-// Middleware to check if admin is authenticated using cookies
+// Middleware to check if admin is authenticated using JWT
 exports.requireAuth = async (req, res, next) => {
     try {
-        const adminToken = req.cookies.admin_token;
+        // Get the Authorization header
+        const authHeader = req.headers.authorization;
 
-        if (!adminToken) {
+        // Extract token from header
+        const token = extractTokenFromHeader(authHeader);
+
+        // Check if token exists
+        if (!token) {
             return res.status(401).json({
-                message: "Access denied. No admin token provided."
+                message: "Access denied. No token provided."
             });
         }
 
-        const admin = await Admin.findById(adminToken);
+        // Verify the token
+        let decoded;
+        try {
+            decoded = verifyToken(token);
+        } catch (error) {
+            if (error.name === 'TokenExpiredError') {
+                return res.status(401).json({
+                    message: "Token expired. Please log in again."
+                });
+            } else if (error.name === 'JsonWebTokenError') {
+                return res.status(401).json({
+                    message: "Invalid token. Please log in again."
+                });
+            }
+            throw error;
+        }
 
+        // Find admin in database using the decoded adminID
+        const admin = await Admin.findOne({ adminID: decoded.adminID });
+
+        // Check if admin exists
         if (!admin) {
             return res.status(401).json({
-                message: "Invalid admin token. Admin not found."
+                message: "Invalid token. Admin not found."
             });
         }
 
-        // Check if session is expired
-        if (admin.sessionExpiry && admin.sessionExpiry < new Date()) {
-            return res.status(401).json({
-                message: "Admin session expired. Please log in again."
-            });
-        }
-
-        // Add admin info to request object
+        // Add admin info to request object for use in other routes
         req.admin = admin;
         req.adminID = admin._id;
 
+        // Continue to next middleware or route handler
         next();
 
     } catch (error) {
@@ -41,26 +60,44 @@ exports.requireAuth = async (req, res, next) => {
 };
 
 // Middleware to check if admin is already logged in (for login routes)
+// With JWT, we just check if a valid token is provided
 exports.requireGuest = async (req, res, next) => {
     try {
-        const adminToken = req.cookies.admin_token;
+        // Get the Authorization header
+        const authHeader = req.headers.authorization;
 
-        if (!adminToken) {
-            return next(); // No token, user is a guest
+        // Extract token from header
+        const token = extractTokenFromHeader(authHeader);
+
+        // If no token, user is a guest - continue
+        if (!token) {
+            return next();
         }
 
-        const admin = await Admin.findById(adminToken);
+        // Try to verify the token
+        try {
+            const decoded = verifyToken(token);
 
-        if (admin && admin.sessionExpiry && admin.sessionExpiry > new Date()) {
-            return res.status(400).json({
-                message: "Admin is already logged in"
-            });
+            // Check if admin exists
+            const admin = await Admin.findById(decoded.adminId);
+
+            if (admin) {
+                // Valid token and admin exists - they're already logged in
+                return res.status(400).json({
+                    message: "You are already logged in"
+                });
+            }
+        } catch (error) {
+            // Token is invalid or expired - treat as guest
+            console.log("Invalid token in requireGuest:", error.message);
         }
 
+        // Continue to next middleware (login)
         next();
 
     } catch (error) {
         console.error("Admin guest middleware error:", error);
-        next(); // Allow to continue as guest on error
+        // In case of error, allow to continue as guest
+        next();
     }
 };

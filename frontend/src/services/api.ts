@@ -13,7 +13,7 @@ const api = axios.create({
 
 // Request interceptor to add auth token
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -25,9 +25,12 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.href = '/';
+      // Only redirect if we're not already on the login page
+      if (window.location.pathname !== '/' && !window.location.pathname.includes('login')) {
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('user');
+        window.location.href = '/';
+      }
     }
     return Promise.reject(error);
   }
@@ -142,23 +145,78 @@ export const teacherAPI = {
   },
 };
 
-// Admin APIs (simplified for now)
+// Admin APIs
 export const adminAPI = {
-  // Get all students
+  // Student management
   getStudents: async () => {
     const response = await api.get('/admin/students');
     return response.data;
   },
 
-  // Get all teachers
+  getStudentById: async (id: string) => {
+    const response = await api.get(`/admin/students/${id}`);
+    return response.data;
+  },
+
+  addStudent: async (studentData: any) => {
+    const response = await api.post('/admin/students', studentData);
+    return response.data;
+  },
+
+  updateStudent: async (id: string, studentData: any) => {
+    const response = await api.patch(`/admin/students/${id}`, studentData);
+    return response.data;
+  },
+
+  deleteStudent: async (id: string) => {
+    const response = await api.delete(`/admin/students/${id}`);
+    return response.data;
+  },
+
+  // Teacher management
   getTeachers: async () => {
     const response = await api.get('/admin/teachers');
     return response.data;
   },
 
-  // Manage calendar events
+  getTeacherById: async (id: string) => {
+    const response = await api.get(`/admin/teachers/${id}`);
+    return response.data;
+  },
+
+  createTeacher: async (teacherData: any) => {
+    const response = await api.post('/admin/teachers', teacherData);
+    return response.data;
+  },
+
+  updateTeacher: async (id: string, teacherData: any) => {
+    const response = await api.patch(`/admin/teachers/${id}`, teacherData);
+    return response.data;
+  },
+
+  deleteTeacher: async (id: string) => {
+    const response = await api.delete(`/admin/teachers/${id}`);
+    return response.data;
+  },
+
+  // Calendar management
+  getCalendarEvents: async () => {
+    const response = await api.get('/admin/calendar');
+    return response.data;
+  },
+
   createCalendarEvent: async (eventData: any) => {
     const response = await api.post('/admin/calendar', eventData);
+    return response.data;
+  },
+
+  updateCalendarEvent: async (id: string, eventData: any) => {
+    const response = await api.patch(`/admin/calendar/${id}`, eventData);
+    return response.data;
+  },
+
+  deleteCalendarEvent: async (id: string) => {
+    const response = await api.delete(`/admin/calendar/${id}`);
     return response.data;
   },
 };

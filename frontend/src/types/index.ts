@@ -12,14 +12,17 @@ export interface LoginCredentials {
 }
 
 export interface Student extends User {
+  _id?: string;
   studentID: string;
   grade: number;
   fathersName: string;
   mothersName: string;
   address: string;
+  section?: string;
 }
 
 export interface Teacher extends User {
+  _id?: string;
   teacherID: string;
   address: string;
 }
@@ -64,8 +67,9 @@ export interface Notice {
 }
 
 export interface CalendarEvent {
-  id: string;
-  studentID: string;
+  _id?: string;
+  id?: string;
+  studentID?: string;
   title: string;
   description: string;
   date: Date;

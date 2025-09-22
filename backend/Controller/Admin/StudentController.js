@@ -231,9 +231,30 @@ const getStudentById = async (req, res) => {
     }
 };
 
+// 🔄 UPDATE STUDENT
+const updateStudent = async (req, res) => {
+    const { id } = req.params;
+    const updates = req.body;
+
+    try {
+        const updatedStudent = await Student.findByIdAndUpdate(id, updates, { new: true });
+        if (!updatedStudent) {
+            return res.status(404).json({ message: "Student not found" });
+        }
+        res.status(200).json({
+            message: "Student updated successfully",
+            student: updatedStudent
+        });
+    } catch (err) {
+        console.error("❌ Error updating student:", err);
+        res.status(500).json({ message: "Server error while updating student" });
+    }
+};
+
 module.exports = {
     addStudent,
     deleteStudent,
     getAllStudents,
-    getStudentById
+    getStudentById,
+    updateStudent
 };

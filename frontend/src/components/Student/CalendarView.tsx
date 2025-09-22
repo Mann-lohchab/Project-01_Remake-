@@ -79,29 +79,14 @@ const CalendarView: React.FC = () => {
 
   if (loading) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         height: '200px',
-        flexDirection: 'column',
-        gap: '10px'
+        color: '#CCCCCC'
       }}>
-        <div style={{
-          border: '4px solid #f3f3f3',
-          borderTop: '4px solid #8b5cf6',
-          borderRadius: '50%',
-          width: '40px',
-          height: '40px',
-          animation: 'spin 1s linear infinite'
-        }}></div>
-        <div>Loading calendar events...</div>
-        <style>{`
-          @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-        `}</style>
+        Loading calendar events...
       </div>
     );
   }
@@ -166,13 +151,12 @@ const CalendarView: React.FC = () => {
     <div>
       {/* Error Display */}
       {error && (
-        <div style={{ 
-          color: '#dc2626', 
-          padding: '15px', 
+        <div style={{
+          backgroundColor: '#444444',
+          color: '#CCCCCC',
+          padding: '15px',
           textAlign: 'center',
-          backgroundColor: '#fee2e2',
-          borderRadius: '8px',
-          border: '1px solid #fca5a5',
+          borderRadius: '4px',
           marginBottom: '20px'
         }}>
           <strong>Notice:</strong> {error}
@@ -180,37 +164,36 @@ const CalendarView: React.FC = () => {
       )}
 
       {/* Calendar Overview */}
-      <div style={{ 
-        background: 'white', 
-        padding: '20px', 
-        borderRadius: '8px', 
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+      <div style={{
+        backgroundColor: '#444444',
+        padding: '20px',
+        borderRadius: '4px',
         marginBottom: '20px'
       }}>
-        <h3 style={{ color: '#8b5cf6', marginBottom: '15px' }}>Calendar Overview</h3>
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', 
+        <h3 style={{ color: '#CCCCCC', marginBottom: '15px' }}>Calendar Overview</h3>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
           gap: '15px',
-          textAlign: 'center' 
+          textAlign: 'center'
         }}>
           <div>
-            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#3b82f6' }}>
+            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#CCCCCC' }}>
               {todayEvents.length}
             </div>
-            <div style={{ fontSize: '14px', color: '#6b7280' }}>Today</div>
+            <div style={{ fontSize: '14px', color: '#999999' }}>Today</div>
           </div>
           <div>
-            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#f59e0b' }}>
+            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#CCCCCC' }}>
               {thisWeekEvents.length}
             </div>
-            <div style={{ fontSize: '14px', color: '#6b7280' }}>This Week</div>
+            <div style={{ fontSize: '14px', color: '#999999' }}>This Week</div>
           </div>
           <div>
-            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#10b981' }}>
+            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#CCCCCC' }}>
               {events.length}
             </div>
-            <div style={{ fontSize: '14px', color: '#6b7280' }}>Total Events</div>
+            <div style={{ fontSize: '14px', color: '#999999' }}>Total Events</div>
           </div>
         </div>
       </div>
@@ -221,24 +204,22 @@ const CalendarView: React.FC = () => {
         gap: '20px' 
       }}>
         {/* Today's Events */}
-        <div style={{ 
-          background: 'white', 
-          padding: '20px', 
-          borderRadius: '8px', 
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)' 
+        <div style={{
+          backgroundColor: '#444444',
+          padding: '20px',
+          borderRadius: '4px'
         }}>
-          <h4 style={{ marginBottom: '15px', color: '#3b82f6' }}>Today's Events</h4>
+          <h4 style={{ marginBottom: '15px', color: '#CCCCCC' }}>Today's Events</h4>
           
           {todayEvents.length === 0 ? (
-            <div style={{ 
-              textAlign: 'center', 
+            <div style={{
+              textAlign: 'center',
               padding: '40px',
-              backgroundColor: '#f9fafb',
-              borderRadius: '8px',
-              color: '#6b7280' 
+              backgroundColor: '#555555',
+              borderRadius: '4px',
+              color: '#CCCCCC'
             }}>
-              <div style={{ fontSize: '48px', marginBottom: '10px' }}>📅</div>
-              <div style={{ fontSize: '18px', marginBottom: '5px', color: '#374151' }}>
+              <div style={{ fontSize: '18px', marginBottom: '5px' }}>
                 No events today
               </div>
               <div style={{ fontSize: '14px' }}>
@@ -317,24 +298,22 @@ const CalendarView: React.FC = () => {
         </div>
 
         {/* Upcoming Events */}
-        <div style={{ 
-          background: 'white', 
-          padding: '20px', 
-          borderRadius: '8px', 
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)' 
+        <div style={{
+          backgroundColor: '#444444',
+          padding: '20px',
+          borderRadius: '4px'
         }}>
-          <h4 style={{ marginBottom: '15px', color: '#10b981' }}>Upcoming Events</h4>
-          
+          <h4 style={{ marginBottom: '15px', color: '#CCCCCC' }}>Upcoming Events</h4>
+
           {upcomingEvents.length === 0 ? (
-            <div style={{ 
-              textAlign: 'center', 
+            <div style={{
+              textAlign: 'center',
               padding: '40px',
-              backgroundColor: '#f9fafb',
-              borderRadius: '8px',
-              color: '#6b7280' 
+              backgroundColor: '#555555',
+              borderRadius: '4px',
+              color: '#CCCCCC'
             }}>
-              <div style={{ fontSize: '48px', marginBottom: '10px' }}>🗓️</div>
-              <div style={{ fontSize: '18px', marginBottom: '5px', color: '#374151' }}>
+              <div style={{ fontSize: '18px', marginBottom: '5px' }}>
                 No upcoming events
               </div>
               <div style={{ fontSize: '14px' }}>

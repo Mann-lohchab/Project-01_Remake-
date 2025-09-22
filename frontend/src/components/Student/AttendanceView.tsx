@@ -96,13 +96,13 @@ const AttendanceView: React.FC = () => {
 
   if (loading) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         height: '200px',
         fontSize: '16px',
-        color: '#6b7280'
+        color: '#CCCCCC'
       }}>
         Loading attendance data...
       </div>
@@ -111,16 +111,16 @@ const AttendanceView: React.FC = () => {
 
   if (error) {
     return (
-      <div style={{ 
-        backgroundColor: '#fee2e2',
-        color: '#dc2626', 
-        padding: '20px', 
+      <div style={{
+        backgroundColor: '#444444',
+        color: '#CCCCCC',
+        padding: '20px',
         textAlign: 'center',
-        borderRadius: '8px',
+        borderRadius: '4px',
         margin: '20px'
       }}>
         <strong>Error:</strong> {error}
-        <div style={{ marginTop: '10px', fontSize: '14px', color: '#7f1d1d' }}>
+        <div style={{ marginTop: '10px', fontSize: '14px' }}>
           Check the console for detailed error information.
         </div>
       </div>
@@ -140,18 +140,17 @@ const AttendanceView: React.FC = () => {
   // If no attendance records
   if (attendance.length === 0) {
     return (
-      <div style={{ 
-        background: 'white', 
-        padding: '40px', 
-        borderRadius: '8px', 
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+      <div style={{
+        backgroundColor: '#444444',
+        padding: '40px',
+        borderRadius: '4px',
         textAlign: 'center'
       }}>
-        <h3 style={{ color: '#3b82f6', marginBottom: '15px' }}>Attendance Records</h3>
-        <p style={{ color: '#6b7280', fontSize: '16px' }}>
+        <h3 style={{ color: '#CCCCCC', marginBottom: '15px' }}>Attendance Records</h3>
+        <p style={{ color: '#CCCCCC', fontSize: '16px' }}>
           No attendance records found for your account.
         </p>
-        <p style={{ color: '#9ca3af', fontSize: '14px', marginTop: '10px' }}>
+        <p style={{ color: '#999999', fontSize: '14px', marginTop: '10px' }}>
           Attendance records will appear here once your teachers mark them.
         </p>
       </div>
@@ -161,70 +160,68 @@ const AttendanceView: React.FC = () => {
   return (
     <div>
       {/* Overview Card */}
-      <div style={{ 
-        background: 'white', 
-        padding: '20px', 
-        borderRadius: '8px', 
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+      <div style={{
+        backgroundColor: '#444444',
+        padding: '20px',
+        borderRadius: '4px',
         marginBottom: '20px'
       }}>
-        <h3 style={{ color: '#3b82f6', marginBottom: '15px' }}>Attendance Overview</h3>
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-around', 
-          textAlign: 'center' 
+        <h3 style={{ color: '#CCCCCC', marginBottom: '15px' }}>Attendance Overview</h3>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-around',
+          textAlign: 'center'
         }}>
           <div>
-            <div style={{ 
-              fontSize: '24px', 
-              fontWeight: 'bold', 
-              color: percentage >= 75 ? '#10b981' : '#ef4444' 
+            <div style={{
+              fontSize: '24px',
+              fontWeight: 'bold',
+              color: '#CCCCCC'
             }}>
               {percentage}%
             </div>
-            <div style={{ fontSize: '14px', color: '#6b7280' }}>Overall Attendance</div>
+            <div style={{ fontSize: '14px', color: '#999999' }}>Overall Attendance</div>
           </div>
           <div>
-            <div style={{ 
-              fontSize: '24px', 
-              fontWeight: 'bold', 
-              color: '#3b82f6' 
+            <div style={{
+              fontSize: '24px',
+              fontWeight: 'bold',
+              color: '#CCCCCC'
             }}>
               {attendance.length}
             </div>
-            <div style={{ fontSize: '14px', color: '#6b7280' }}>Total Classes</div>
+            <div style={{ fontSize: '14px', color: '#999999' }}>Total Classes</div>
           </div>
           <div>
-            <div style={{ 
-              fontSize: '24px', 
-              fontWeight: 'bold', 
-              color: '#10b981' 
+            <div style={{
+              fontSize: '24px',
+              fontWeight: 'bold',
+              color: '#CCCCCC'
             }}>
               {attendance.filter(r => r.status === 'Present').length}
             </div>
-            <div style={{ fontSize: '14px', color: '#6b7280' }}>Present</div>
+            <div style={{ fontSize: '14px', color: '#999999' }}>Present</div>
           </div>
           <div>
-            <div style={{ 
-              fontSize: '24px', 
-              fontWeight: 'bold', 
-              color: '#ef4444' 
+            <div style={{
+              fontSize: '24px',
+              fontWeight: 'bold',
+              color: '#CCCCCC'
             }}>
               {attendance.filter(r => r.status === 'Absent').length}
             </div>
-            <div style={{ fontSize: '14px', color: '#6b7280' }}>Absent</div>
+            <div style={{ fontSize: '14px', color: '#999999' }}>Absent</div>
           </div>
         </div>
       </div>
 
       {/* Recent Attendance Card */}
-      <div style={{ 
-        background: 'white', 
-        padding: '20px', 
-        borderRadius: '8px', 
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)' 
+      <div style={{
+        backgroundColor: '#444444',
+        padding: '20px',
+        borderRadius: '4px'
       }}>
-        <h4 style={{ marginBottom: '15px' }}>Recent Attendance Records</h4>
+        <h4 style={{ marginBottom: '15px', color: '#CCCCCC' }}>Recent Attendance Records</h4>
         <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
           {attendance
             .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
@@ -232,27 +229,19 @@ const AttendanceView: React.FC = () => {
             .map((record) => (
               <div
                 key={record._id}
-                style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
                   alignItems: 'center',
-                  padding: '12px', 
-                  borderBottom: '1px solid #f3f4f6',
-                  transition: 'background-color 0.2s',
-                  cursor: 'default'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#f9fafb';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
+                  padding: '12px',
+                  borderBottom: '1px solid #555555'
                 }}
               >
                 <div>
-                  <div style={{ fontWeight: '500' }}>
+                  <div style={{ fontWeight: '500', color: '#CCCCCC' }}>
                     {record.subject || 'General Attendance'}
                   </div>
-                  <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                  <div style={{ fontSize: '12px', color: '#999999' }}>
                     {new Date(record.date).toLocaleDateString('en-US', {
                       weekday: 'short',
                       year: 'numeric',
@@ -261,17 +250,13 @@ const AttendanceView: React.FC = () => {
                     })}
                   </div>
                 </div>
-                <span style={{ 
+                <span style={{
                   padding: '4px 12px',
-                  borderRadius: '20px',
+                  borderRadius: '4px',
                   fontSize: '12px',
                   fontWeight: '500',
-                  backgroundColor: 
-                    record.status === 'Present' ? '#dcfce7' : 
-                    record.status === 'Late' ? '#fef3c7' : '#fee2e2',
-                  color: 
-                    record.status === 'Present' ? '#166534' : 
-                    record.status === 'Late' ? '#92400e' : '#991b1b'
+                  backgroundColor: '#555555',
+                  color: '#CCCCCC'
                 }}>
                   {record.status}
                 </span>

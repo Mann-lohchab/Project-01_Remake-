@@ -74,13 +74,13 @@ const HomeworkView: React.FC = () => {
 
   if (loading) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         height: '200px',
         fontSize: '16px',
-        color: '#6b7280'
+        color: '#CCCCCC'
       }}>
         Loading homework data...
       </div>
@@ -89,16 +89,16 @@ const HomeworkView: React.FC = () => {
 
   if (error) {
     return (
-      <div style={{ 
-        backgroundColor: '#fee2e2',
-        color: '#dc2626', 
-        padding: '20px', 
+      <div style={{
+        backgroundColor: '#444444',
+        color: '#CCCCCC',
+        padding: '20px',
         textAlign: 'center',
-        borderRadius: '8px',
+        borderRadius: '4px',
         margin: '20px'
       }}>
         <strong>Error:</strong> {error}
-        <div style={{ marginTop: '10px', fontSize: '14px', color: '#7f1d1d' }}>
+        <div style={{ marginTop: '10px', fontSize: '14px' }}>
           Check the console for detailed error information.
         </div>
       </div>
@@ -116,18 +116,17 @@ const HomeworkView: React.FC = () => {
   // If no homework records
   if (homework.length === 0) {
     return (
-      <div style={{ 
-        background: 'white', 
-        padding: '40px', 
-        borderRadius: '8px', 
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+      <div style={{
+        backgroundColor: '#444444',
+        padding: '40px',
+        borderRadius: '4px',
         textAlign: 'center'
       }}>
-        <h3 style={{ color: '#10b981', marginBottom: '15px' }}>Homework Records</h3>
-        <p style={{ color: '#6b7280', fontSize: '16px' }}>
+        <h3 style={{ color: '#CCCCCC', marginBottom: '15px' }}>Homework Records</h3>
+        <p style={{ color: '#CCCCCC', fontSize: '16px' }}>
           No homework assignments found for your account.
         </p>
-        <p style={{ color: '#9ca3af', fontSize: '14px', marginTop: '10px' }}>
+        <p style={{ color: '#999999', fontSize: '14px', marginTop: '10px' }}>
           Homework assignments will appear here once your teachers assign them.
         </p>
       </div>
@@ -137,82 +136,80 @@ const HomeworkView: React.FC = () => {
   return (
     <div>
       {/* Overview Card */}
-      <div style={{ 
-        background: 'white', 
-        padding: '20px', 
-        borderRadius: '8px', 
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+      <div style={{
+        backgroundColor: '#444444',
+        padding: '20px',
+        borderRadius: '4px',
         marginBottom: '20px'
       }}>
-        <h3 style={{ color: '#10b981', marginBottom: '15px' }}>Homework Overview</h3>
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-around', 
-          textAlign: 'center' 
+        <h3 style={{ color: '#CCCCCC', marginBottom: '15px' }}>Homework Overview</h3>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-around',
+          textAlign: 'center'
         }}>
           <div>
-            <div style={{ 
-              fontSize: '24px', 
-              fontWeight: 'bold', 
-              color: percentage >= 75 ? '#10b981' : '#ef4444' 
+            <div style={{
+              fontSize: '24px',
+              fontWeight: 'bold',
+              color: '#CCCCCC'
             }}>
               {percentage}%
             </div>
-            <div style={{ fontSize: '14px', color: '#6b7280' }}>Completion Rate</div>
+            <div style={{ fontSize: '14px', color: '#999999' }}>Completion Rate</div>
           </div>
           <div>
-            <div style={{ 
-              fontSize: '24px', 
-              fontWeight: 'bold', 
-              color: '#3b82f6' 
+            <div style={{
+              fontSize: '24px',
+              fontWeight: 'bold',
+              color: '#CCCCCC'
             }}>
               {homework.length}
             </div>
-            <div style={{ fontSize: '14px', color: '#6b7280' }}>Total Assignments</div>
+            <div style={{ fontSize: '14px', color: '#999999' }}>Total Assignments</div>
           </div>
           <div>
-            <div style={{ 
-              fontSize: '24px', 
-              fontWeight: 'bold', 
-              color: '#10b981' 
+            <div style={{
+              fontSize: '24px',
+              fontWeight: 'bold',
+              color: '#CCCCCC'
             }}>
               {completedHomework.length}
             </div>
-            <div style={{ fontSize: '14px', color: '#6b7280' }}>Completed</div>
+            <div style={{ fontSize: '14px', color: '#999999' }}>Completed</div>
           </div>
           <div>
-            <div style={{ 
-              fontSize: '24px', 
-              fontWeight: 'bold', 
-              color: '#ef4444' 
+            <div style={{
+              fontSize: '24px',
+              fontWeight: 'bold',
+              color: '#CCCCCC'
             }}>
               {pendingHomework.length}
             </div>
-            <div style={{ fontSize: '14px', color: '#6b7280' }}>Pending</div>
+            <div style={{ fontSize: '14px', color: '#999999' }}>Pending</div>
           </div>
           {lateHomework.length > 0 && (
             <div>
-              <div style={{ 
-                fontSize: '24px', 
-                fontWeight: 'bold', 
-                color: '#f59e0b' 
+              <div style={{
+                fontSize: '24px',
+                fontWeight: 'bold',
+                color: '#CCCCCC'
               }}>
                 {lateHomework.length}
               </div>
-              <div style={{ fontSize: '14px', color: '#6b7280' }}>Late</div>
+              <div style={{ fontSize: '14px', color: '#999999' }}>Late</div>
             </div>
           )}
         </div>
       </div>
 
       {/* Recent Homework Card */}
-      <div style={{ 
-        background: 'white', 
-        padding: '20px', 
-        borderRadius: '8px', 
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)' 
+      <div style={{
+        backgroundColor: '#444444',
+        padding: '20px',
+        borderRadius: '4px'
       }}>
-        <h4 style={{ marginBottom: '15px' }}>Recent Homework Assignments</h4>
+        <h4 style={{ marginBottom: '15px', color: '#CCCCCC' }}>Recent Homework Assignments</h4>
         <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
           {homework
             .sort((a, b) => new Date(b.assignedDate).getTime() - new Date(a.assignedDate).getTime())
@@ -220,38 +217,30 @@ const HomeworkView: React.FC = () => {
             .map((item) => (
               <div
                 key={item._id}
-                style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
                   alignItems: 'flex-start',
-                  padding: '15px', 
-                  borderBottom: '1px solid #f3f4f6',
-                  transition: 'background-color 0.2s',
-                  cursor: 'default'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#f9fafb';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
+                  padding: '15px',
+                  borderBottom: '1px solid #555555'
                 }}
               >
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: '500', marginBottom: '4px' }}>
+                  <div style={{ fontWeight: '500', marginBottom: '4px', color: '#CCCCCC' }}>
                     {item.title}
                   </div>
-                  <div style={{ fontSize: '14px', color: '#6b7280', marginBottom: '4px' }}>
+                  <div style={{ fontSize: '14px', color: '#999999', marginBottom: '4px' }}>
                     Subject: {item.subject || 'General'}
                   </div>
                   {item.description && (
-                    <div style={{ fontSize: '13px', color: '#9ca3af', marginBottom: '4px' }}>
-                      {item.description.length > 60 
-                        ? `${item.description.substring(0, 60)}...` 
+                    <div style={{ fontSize: '13px', color: '#AAAAAA', marginBottom: '4px' }}>
+                      {item.description.length > 60
+                        ? `${item.description.substring(0, 60)}...`
                         : item.description
                       }
                     </div>
                   )}
-                  <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                  <div style={{ fontSize: '12px', color: '#999999' }}>
                     Due: {new Date(item.dueDate).toLocaleDateString('en-US', {
                       weekday: 'short',
                       year: 'numeric',
@@ -260,9 +249,9 @@ const HomeworkView: React.FC = () => {
                     })}
                   </div>
                   {item.marks !== undefined && item.totalMarks !== undefined && (
-                    <div style={{ 
-                      fontSize: '12px', 
-                      color: '#059669',
+                    <div style={{
+                      fontSize: '12px',
+                      color: '#CCCCCC',
                       marginTop: '4px',
                       fontWeight: '500'
                     }}>
@@ -271,17 +260,13 @@ const HomeworkView: React.FC = () => {
                   )}
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
-                  <span style={{ 
+                  <span style={{
                     padding: '4px 12px',
-                    borderRadius: '20px',
+                    borderRadius: '4px',
                     fontSize: '12px',
                     fontWeight: '500',
-                    backgroundColor: 
-                      item.status === 'Submitted' || item.status === 'Graded' ? '#dcfce7' : 
-                      item.status === 'Late' ? '#fef3c7' : '#fee2e2',
-                    color: 
-                      item.status === 'Submitted' || item.status === 'Graded' ? '#166534' : 
-                      item.status === 'Late' ? '#92400e' : '#991b1b'
+                    backgroundColor: '#555555',
+                    color: '#CCCCCC'
                   }}>
                     {item.status}
                   </span>
@@ -290,9 +275,9 @@ const HomeworkView: React.FC = () => {
                     <span style={{
                       fontSize: '10px',
                       padding: '2px 6px',
-                      backgroundColor: '#fef3c7',
-                      color: '#92400e',
-                      borderRadius: '10px',
+                      backgroundColor: '#666666',
+                      color: '#CCCCCC',
+                      borderRadius: '4px',
                       fontWeight: '500'
                     }}>
                       DUE SOON
