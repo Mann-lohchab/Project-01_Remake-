@@ -4,13 +4,23 @@ const Homework = require('../Models/Homework');
 // Get All Homework for a specific student
 const getAllHomework = async (req, res) => {
     const studentID = req.params.id;
+    console.log('🔍 getAllHomework called for studentID:', studentID);
     try {
-        const records = await Homework.find({
-            studentID: new RegExp(`^${studentID}$`, "i")
-        });
+        // First, find the student's grade
+        const Student = require('../Models/Student');
+        const student = await Student.findOne({ studentID: new RegExp(`^${studentID}$`, "i") });
+        if (!student) {
+            console.log('❌ Student not found');
+            return res.status(404).json({ message: "Student not found" });
+        }
+        const grade = student.grade;
+        console.log('🔍 Student grade:', grade);
+
+        const records = await Homework.find({ grade });
+        console.log('✅ Found homework records:', records.length, records);
         res.status(200).json(records);
     } catch (error) {
-        console.error("Error fetching all Homework:", error);
+        console.error("❌ Error fetching all Homework:", error);
         res.status(500).json({ message: "Server error while fetching Homework" });
     }
 };
@@ -21,12 +31,20 @@ const getHomeworkByDate = async (req, res) => {
     const dateParam = req.params.date;
 
     try {
+        // Find student grade
+        const Student = require('../Models/Student');
+        const student = await Student.findOne({ studentID: new RegExp(`^${studentID}$`, "i") });
+        if (!student) {
+            return res.status(404).json({ message: "Student not found" });
+        }
+        const grade = student.grade;
+
         const startDate = new Date(dateParam);
         const endDate = new Date(dateParam);
         endDate.setHours(23, 59, 59, 999);
 
         const recordsByDate = await Homework.find({
-            studentID: new RegExp(`^${studentID}$`, "i"),
+            grade,
             date: { $gte: startDate, $lte: endDate }
         });
 
@@ -52,12 +70,20 @@ const getHomeworkByRange = async (req, res) => {
     }
 
     try {
+        // Find student grade
+        const Student = require('../Models/Student');
+        const student = await Student.findOne({ studentID: new RegExp(`^${studentID}$`, "i") });
+        if (!student) {
+            return res.status(404).json({ message: "Student not found" });
+        }
+        const grade = student.grade;
+
         const startDate = new Date(fromDate);
         const endDate = new Date(toDate);
         endDate.setHours(23, 59, 59, 999);
 
         const records = await Homework.find({
-            studentID: new RegExp(`^${studentID}$`, "i"),
+            grade,
             date: { $gte: startDate, $lte: endDate }
         });
 

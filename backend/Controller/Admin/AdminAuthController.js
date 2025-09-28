@@ -38,8 +38,14 @@ exports.login = async (req, res) => {
 
         res.status(200).json({
             message: `Welcome ${admin.firstName} ${admin.lastName || ''}`.trim(),
-            adminID: admin.adminID,
-            email: admin.email
+            token: admin._id, // Using admin ID as token for now
+            user: {
+                adminID: admin.adminID,
+                firstName: admin.firstName,
+                lastName: admin.lastName,
+                email: admin.email,
+                lastLoginAt: admin.lastLoginAt
+            }
         });
     } catch (err) {
         console.error("Admin Login Error:", err);

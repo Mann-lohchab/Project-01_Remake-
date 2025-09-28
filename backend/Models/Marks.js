@@ -20,7 +20,7 @@ const markSchema = new mongoose.Schema({
     },
     examType: {
         type: String,
-        enum: ['Midterm', 'Final', 'Class Test',],
+        enum: ['Midterm', 'Final', 'Class Test', 'Assignment', 'Quiz'],
         required: true
     },
     semester: {
@@ -32,6 +32,9 @@ const markSchema = new mongoose.Schema({
         default: Date.now
     },
 });
+
+// Add compound unique index to prevent duplicate marks for same student-subject-exam-semester
+markSchema.index({ studentID: 1, subject: 1, examType: 1, semester: 1 }, { unique: true });
 
 // Safe Mode
 const Marks = mongoose.models.Marks || mongoose.model('Marks', markSchema);

@@ -5,15 +5,12 @@ import { Student } from '../../types';
 
 interface HomeworkItem {
   _id: string;
-  studentId: string;
-  subject: string;
+  grade: number;
   title: string;
   description?: string;
   dueDate: string;
-  assignedDate: string;
-  status: 'Assigned' | 'Submitted' | 'Late' | 'Graded';
-  marks?: number;
-  totalMarks?: number;
+  assignDate: string;
+  date: string;
 }
 
 const HomeworkView: React.FC = () => {
@@ -26,12 +23,15 @@ const HomeworkView: React.FC = () => {
     const fetchHomework = async () => {
       if (!user || user.role !== 'student') return;
       const student = user as Student;
-      
+      console.log('🔍 Fetching homework for studentID:', student.studentID);
+
       try {
         setLoading(true);
         const data = await studentAPI.getHomework(student.studentID);
+        console.log('✅ Homework API response:', data);
         setHomework(Array.isArray(data) ? data : data.homework || []);
       } catch (err: any) {
+        console.log('❌ Homework fetch error:', err);
         setError(err.response?.data?.message || 'Failed to fetch homework data');
       } finally {
         setLoading(false);
@@ -62,8 +62,8 @@ const HomeworkView: React.FC = () => {
     }, `Error: ${error}`);
   }
 
-  const pendingHomework = homework.filter(hw => hw.status === 'Assigned');
-  const completedHomework = homework.filter(hw => hw.status === 'Submitted' || hw.status === 'Graded');
+  // For now, show all homework as pending
+  const pendingHomework = homework;
 
   return React.createElement('div', null,
     React.createElement('div', { 
@@ -85,34 +85,14 @@ const HomeworkView: React.FC = () => {
         }
       },
         React.createElement('div', null,
-          React.createElement('div', { 
-            style: { 
-              fontSize: '24px', 
-              fontWeight: 'bold', 
-              color: '#ef4444' 
-            } 
-          }, pendingHomework.length),
-          React.createElement('div', { style: { fontSize: '14px', color: '#6b7280' } }, 'Pending')
-        ),
-        React.createElement('div', null,
-          React.createElement('div', { 
-            style: { 
-              fontSize: '24px', 
-              fontWeight: 'bold', 
-              color: '#10b981' 
-            } 
-          }, completedHomework.length),
-          React.createElement('div', { style: { fontSize: '14px', color: '#6b7280' } }, 'Completed')
-        ),
-        React.createElement('div', null,
-          React.createElement('div', { 
-            style: { 
-              fontSize: '24px', 
-              fontWeight: 'bold', 
-              color: '#3b82f6' 
-            } 
+          React.createElement('div', {
+            style: {
+              fontSize: '24px',
+              fontWeight: 'bold',
+              color: '#3b82f6'
+            }
           }, homework.length),
-          React.createElement('div', { style: { fontSize: '14px', color: '#6b7280' } }, 'Total')
+          React.createElement('div', { style: { fontSize: '14px', color: '#6b7280' } }, 'Total Homework')
         )
       )
     ),
@@ -154,71 +134,16 @@ const HomeworkView: React.FC = () => {
                 }
               },
                 React.createElement('div', { style: { fontWeight: '600', marginBottom: '5px' } }, hw.title),
-                React.createElement('div', { style: { fontSize: '14px', color: '#6b7280', marginBottom: '5px' } }, 
-                  `Subject: ${hw.subject || 'General'}`
-                ),
-                hw.description && React.createElement('div', { 
-                  style: { fontSize: '14px', marginBottom: '5px' } 
+                hw.description && React.createElement('div', {
+                  style: { fontSize: '14px', marginBottom: '5px' }
                 }, hw.description),
-                React.createElement('div', { 
-                  style: { 
-                    fontSize: '12px', 
-                    color: '#dc2626', 
-                    fontWeight: '500' 
-                  } 
+                React.createElement('div', {
+                  style: {
+                    fontSize: '12px',
+                    color: '#dc2626',
+                    fontWeight: '500'
+                  }
                 }, `Due: ${new Date(hw.dueDate).toLocaleDateString()}`)
-              )
-            )
-          )
-      ),
-
-      // Recent Homework
-      React.createElement('div', { 
-        style: { 
-          background: 'white', 
-          padding: '20px', 
-          borderRadius: '8px', 
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)' 
-        }
-      },
-        React.createElement('h4', { style: { marginBottom: '15px', color: '#10b981' } }, 'Recent Submissions'),
-        completedHomework.length === 0 ? 
-          React.createElement('p', { style: { textAlign: 'center', color: '#6b7280' } }, 'No completed homework') :
-          React.createElement('div', { 
-            style: { 
-              maxHeight: '300px', 
-              overflowY: 'auto' 
-            }
-          },
-            ...completedHomework.slice(0, 5).map((hw) => 
-              React.createElement('div', { 
-                key: hw._id,
-                style: { 
-                  padding: '15px', 
-                  borderLeft: '4px solid #10b981',
-                  backgroundColor: '#f0fdf4',
-                  marginBottom: '10px',
-                  borderRadius: '4px'
-                }
-              },
-                React.createElement('div', { style: { fontWeight: '600', marginBottom: '5px' } }, hw.title),
-                React.createElement('div', { style: { fontSize: '14px', color: '#6b7280', marginBottom: '5px' } }, 
-                  `Subject: ${hw.subject || 'General'}`
-                ),
-                hw.marks !== undefined && hw.totalMarks !== undefined && 
-                  React.createElement('div', { 
-                    style: { 
-                      fontSize: '12px', 
-                      color: '#059669', 
-                      fontWeight: '500' 
-                    } 
-                  }, `Score: ${hw.marks}/${hw.totalMarks}`),
-                React.createElement('div', { 
-                  style: { 
-                    fontSize: '12px', 
-                    color: '#6b7280' 
-                  } 
-                }, `Status: ${hw.status}`)
               )
             )
           )

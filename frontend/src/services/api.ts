@@ -123,8 +123,28 @@ export const teacherAPI = {
   },
 
   // Manage homework
+  getHomework: async () => {
+    const response = await api.get('/teachers/Homework');
+    return response.data;
+  },
+
   createHomework: async (homeworkData: any) => {
     const response = await api.post('/teachers/Homework', homeworkData);
+    return response.data;
+  },
+
+  editHomework: async (homeworkData: any) => {
+    const response = await api.patch('/teachers/Homework', homeworkData);
+    return response.data;
+  },
+
+  deleteHomework: async (homeworkData: any) => {
+    const response = await api.delete('/teachers/Homework', { data: homeworkData });
+    return response.data;
+  },
+
+  getHomeworkByRange: async (data: any) => {
+    const response = await api.post('/teachers/Homework/range', data);
     return response.data;
   },
 
@@ -139,6 +159,29 @@ export const teacherAPI = {
     const response = await api.post('/teachers/Notice', noticeData);
     return response.data;
   },
+
+  // Get calendar events
+  getCalendar: async () => {
+    const response = await api.get('/teachers/Calendar');
+    return response.data;
+  },
+
+  // Create calendar event
+  createCalendarEvent: async (eventData: any) => {
+    const response = await api.post('/teachers/Calendar', eventData);
+    return response.data;
+  },
+
+  // ✅ Add this new method to get all marks,that is the reason i was not able to see the marks
+  getMarks: async () => {
+    const response = await api.get('/teachers/Marks');
+    return response.data;
+  },
+  deleteMark: async (markId: string) => {
+    const response = await api.delete(`/teachers/Marks/${markId}`);
+    return response.data;
+  },
+
 };
 
 // Admin APIs (simplified for now)

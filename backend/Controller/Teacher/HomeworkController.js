@@ -1,4 +1,5 @@
 const Homework = require('../../Models/Homework');
+const Student = require('../../Models/Student');
 
 //View all homework
 const getAllHomework = async(req,res)=>{
@@ -13,9 +14,11 @@ const getAllHomework = async(req,res)=>{
 
 //View homework in range
 const getHomeworkByRange = async (req,res)=>{
+    console.log('🔍 getHomeworkByRange called with body:', req.body);
     const {fromDate,toDate}= req.body;
 
     if(!fromDate || !toDate){
+        console.log('❌ Missing fromDate or toDate');
         return res.status(400).json({message:"Both fromDate and toDate are required"});
     }
 
@@ -27,43 +30,44 @@ const getHomeworkByRange = async (req,res)=>{
             }
         }).sort({date:-1});
 
+        console.log('✅ Found homework in range:', homeworkByRange.length);
         res.status(200).json(homeworkByRange);
     }catch(err){
-        console.log("Error fetching homework by range",err);
+        console.log("❌ Error fetching homework by range",err);
         res.status(500).json({message:"Server error while fetching homework by range"});
     }
 };
 
 //create a Homework
 const createHomework = async(req,res)=>{
-    const {studentID,title,description,assignDate,dueDate,date} = req.body;
+    console.log('🔍 createHomework called with body:', req.body);
+    const {title,description,assignDate,dueDate,grade,subject,instructions} = req.body;
 
-    if(!studentID || !title || !description || !assignDate || !dueDate || !date ){
+    console.log('Grade received:', grade, 'type:', typeof grade);
+    const gradeNum = parseInt(grade);
+    console.log('Grade parsed:', gradeNum);
+    if(!title || !description || !assignDate || !dueDate || !grade ){
+        console.log('❌ Missing required fields:', {title, description, assignDate, dueDate, grade});
         return res.status(400).json({message:"All the fields are required"});
     }
 
-    //check if the date is today
-    const today = new Date().toISOString().split('T')[0];
-    const homeworkDate = new Date(date).toISOString().split('T')[0];
-
-    if(homeworkDate !== today){
-        return res.status(400).json({message:"You can only create homework for today"});
-    }
-
     try{
+        const date = new Date(); // Today's date
+
         const newHomework = new Homework({
-            studentID,
+            grade: gradeNum,
             title,
             description,
-            assignDate,
-            dueDate,
+            assignDate: new Date(assignDate),
+            dueDate: new Date(dueDate),
             date
         });
         await newHomework.save();
+        console.log('✅ Homework created successfully:', newHomework);
 
-        res.status(201).json({message:"Homework created successfully",homework:newHomework});
+        res.status(201).json({message:"Homework created successfully", homework: newHomework});
     }catch (err){
-        console.log("Error creating homework",err);
+        console.log("❌ Error creating homework",err);
         res.status(500).json({message:"Server error while creating homework"});
     }
 };

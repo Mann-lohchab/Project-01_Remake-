@@ -247,9 +247,18 @@ exports.login = async (req, res) => {
         // Send response with token
         res.status(200).json({
             message: `Welcome ${studentData.firstName} ${studentData.lastName || ''}`.trim(),
-            studentID: studentData.studentID,
             token: token,
-            expiresIn: '24h'
+            user: {
+                studentID: studentData.studentID,
+                firstName: studentData.firstName,
+                lastName: studentData.lastName,
+                fathersName: studentData.fathersName,
+                mothersName: studentData.mothersName,
+                Address: studentData.Address,
+                grade: studentData.grade,
+                email: studentData.email,
+                lastLoginAt: studentData.lastLoginAt
+            }
         });
 
     } catch (err) {

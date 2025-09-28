@@ -38,4 +38,21 @@ router.get('/dashboard', auth.requireAuth, (req, res) => {
     });
 });
 
+// we did not make the router.get for getting all the students like we did of all others so that is the reason we have to write this in teacherauth.js you can also make a seperate file if you want but that is really not necessary cause there is only one function
+router.get('/students', auth.requireAuth, async (req, res) => {
+    console.log('🎯 STUDENTS ROUTE HANDLER EXECUTING');
+    console.log('👤 Authenticated teacher:', req.teacher.firstName);
+    try {
+        const Student = require('../../Models/Student');
+        console.log('📚 About to query students...');
+        const students = await Student.find({});
+        console.log('✅ Students found:', students.length);
+        console.log('📋 Students:', students);
+        res.json(students);
+    } catch (error) {
+        console.error('❌ Error fetching students:', error);
+        res.status(500).json({ message: 'Error fetching students' });
+    }
+});
+
 module.exports = router;

@@ -63,20 +63,20 @@ const MarksView: React.FC = () => {
 
   const calculateOverallPercentage = () => {
     if (marks.length === 0) return 0;
-    const totalPossible = marks.reduce((sum, mark) => sum + mark.totalMarks, 0);
-    const totalObtained = marks.reduce((sum, mark) => sum + mark.marksObtained, 0);
+    const totalPossible = marks.reduce((sum, mark) => sum + Number(mark.totalMarks), 0);
+    const totalObtained = marks.reduce((sum, mark) => sum + Number(mark.marksObtained), 0);
     return Math.round((totalObtained / totalPossible) * 100);
   };
 
   const getSubjectWiseMarks = () => {
     const subjectMap: { [key: string]: { obtained: number; total: number; count: number } } = {};
-    
+
     marks.forEach(mark => {
       if (!subjectMap[mark.subject]) {
         subjectMap[mark.subject] = { obtained: 0, total: 0, count: 0 };
       }
-      subjectMap[mark.subject].obtained += mark.marksObtained;
-      subjectMap[mark.subject].total += mark.totalMarks;
+      subjectMap[mark.subject].obtained += Number(mark.marksObtained);
+      subjectMap[mark.subject].total += Number(mark.totalMarks);
       subjectMap[mark.subject].count += 1;
     });
 
@@ -244,7 +244,7 @@ const MarksView: React.FC = () => {
             }
           },
             ...marks.slice(0, 8).map((mark) => {
-              const percentage = Math.round((mark.marksObtained / mark.totalMarks) * 100);
+              const percentage = Math.round((Number(mark.marksObtained) / Number(mark.totalMarks)) * 100);
               return React.createElement('div', { 
                 key: mark._id,
                 style: { 

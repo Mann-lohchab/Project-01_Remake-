@@ -4,6 +4,7 @@ const auth = require('../../Middleware/TeacherAuth');
 
 //import controller function
 const{
+    getAllMarksForTeacher,
     getAllMarks,
     createMarks,
     editMarks,
@@ -11,6 +12,9 @@ const{
 } = require('../../Controller/Teacher/MarksController')
 
 //routes
+// ✅ Get all marks for teacher
+router.get("/", auth.requireAuth, getAllMarksForTeacher);
+
 // ✅ Get all marks by student ID
 router.get("/:id", auth.requireAuth, getAllMarks);
 

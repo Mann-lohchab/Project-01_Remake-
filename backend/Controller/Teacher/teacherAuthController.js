@@ -44,9 +44,15 @@ exports.login = async(req, res) => {
 
         res.status(200).json({
             message: `Welcome ${teacherData.firstName} ${teacherData.lastName || ''}`.trim(),
-            teacherID: teacherData.teacherID,
-            email: teacherData.email,
-            token: token
+            token: token,
+            user: {
+                teacherID: teacherData.teacherID,
+                email: teacherData.email,
+                firstName: teacherData.firstName,
+                lastName: teacherData.lastName,
+                Address: teacherData.Address,
+                lastLoginAt: teacherData.lastLoginAt
+            }
         });
 
     } catch (err) {

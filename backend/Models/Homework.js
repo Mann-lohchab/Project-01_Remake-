@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 // Schema of homework
 const homeworkSchema = new mongoose.Schema({
-    studentID:{
-        type: String,
+    grade:{
+        type: Number,
         required:true
     },
     title: {
@@ -22,7 +22,7 @@ const homeworkSchema = new mongoose.Schema({
         type: Date,
         required: true,
     },
-    date: {  // ADD THIS FIELD
+    date: {
         type: Date,
         required: true
     }

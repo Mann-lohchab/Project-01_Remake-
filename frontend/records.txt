@@ -1,0 +1,27 @@
+===============================================
+FRONTEND FIX RECORDS - September 21, 2025
+===============================================
+
+(1)PROBLEM IN THE STUDENT VIEW COMPONENT
+
+(.)Fixed the loadStudents function - Removed the broken response.data extraction and used the data directly from teacherAPI.getStudents()
+(.)Updated the Student interface - Added _id field since your backend returns _id instead of id
+(.)Fixed the key prop - Used student._id || student.id || student.studentID to handle different ID field names
+(.)Added console logging to help debug what data is being received
+
+(2)PROBLEM IN THE Teacher part (not able to see the marks)
+(.)the code was writeen to show the hardcoded values so i added the code for getting the marks in 
+    api.ts also in the teacher part and also changed the code (api.localstorage ) to take the data 
+    from the mongodb 
+(.) after that it is showing the marks perfectly
+
+(3)PROBLEM not able to save the homework in the mongodb
+    (.) here are all the issues 
+        (1)=>The interface had subject as optional, but it should be required
+        (2)=>No validation was being performed before submitting
+        (3)=>Potential issues with data preparation and structure
+    (.)here are the solutions
+       (1)=>Made subject required in the interface
+       (2)=>Added comprehensive console logging
+       (3)=>Added boxSizing: 'border-box' to prevent layout issues
+       

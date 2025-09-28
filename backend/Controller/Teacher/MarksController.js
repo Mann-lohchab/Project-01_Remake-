@@ -1,5 +1,19 @@
 const Marks = require('../../Models/Marks');
 
+//get all marks for teacher (all students)
+const getAllMarksForTeacher = async (req,res)=>{
+    try{
+        const marksList = await Marks.find({}).sort({date:-1});//show the latest first
+        if(marksList.length === 0){
+            return res.status(404).json({message:"No marks found"});
+        }
+        res.status(200).json(marksList);
+    }catch (err){
+        console.log("Error fetching all marks",err);
+        res.status(500).json({message:"Server error while fetching marks "});
+    }
+};
+
 //get all marks by student id
 const getAllMarks = async (req,res)=>{
     const studentID = req.params.id;
@@ -81,6 +95,7 @@ const deleteMarks = async(req,res)=>{
     }
 };
 module.exports = {
+    getAllMarksForTeacher,
     getAllMarks,
     createMarks,
     editMarks,

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { teacherAPI } from '../../services/api';
 
 interface Student {
-  id: string;
+  _id?: string;
+  id?: string;
   studentID: string;
   firstName: string;
   lastName: string;
@@ -11,6 +12,7 @@ interface Student {
   fathersName?: string;
   mothersName?: string;
   address?: string;
+  Address?: string;
 }
 
 const StudentsView: React.FC = () => {
@@ -43,6 +45,7 @@ const StudentsView: React.FC = () => {
     setLoading(true);
     try {
       const data = await teacherAPI.getStudents();
+      console.log('Frontend received students:', data);
       setStudents(data);
       // Cache students for offline use
       localStorage.setItem('cached_students', JSON.stringify(data));
@@ -224,7 +227,7 @@ const StudentsView: React.FC = () => {
             {/* Student Rows */}
             {filteredStudents.map((student, index) => (
               <div
-                key={student.id}
+                key={student._id || student.id || student.studentID}
                 style={{
                   padding: '20px',
                   borderBottom: index < filteredStudents.length - 1 ? '1px solid #e5e7eb' : 'none',

@@ -3,10 +3,13 @@ const Calendar = require('../Models/Calendar');
 
 // 1️⃣ Get all calendar events
 const getAllCalendarEvents = async (req, res) => {
-    const studentID = req.student.studentID; // 👈 get studentID from auth middleware
+    const studentID = req.params.id; // 👈 get studentID from URL parameter
     try {
         const events = await Calendar.find({
-            studentID: new RegExp(`^${studentID}$`, "i")
+            $or: [
+                { studentID: new RegExp(`^${studentID}$`, "i") },
+                { studentID: "all" } // Include global events
+            ]
         });
         res.status(200).json(events);
     } catch (err) {
@@ -17,7 +20,7 @@ const getAllCalendarEvents = async (req, res) => {
 
 // 2️⃣ Get calendar events by date
 const getCalendarByDate = async (req, res) => {
-    const studentID = req.student.studentID;
+    const studentID = req.params.id;
     const date = req.params.date;
 
     if (isNaN(new Date(date))) {
@@ -46,7 +49,7 @@ const getCalendarByDate = async (req, res) => {
 
 // 3️⃣ Get calendar events in date range
 const getCalendarByRange = async (req, res) => {
-    const studentID = req.student.studentID;
+    const studentID = req.params.id;
     const fromDate = req.query.fromDate;
     const toDate = req.query.toDate;
 

@@ -21,6 +21,7 @@ const createCalendarEvent = async(req,res)=>{
     }
     try{
         const newEvent = new Calendar({
+            studentID: "all", // Global event for all students
             title,
             description,
             date,
