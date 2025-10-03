@@ -25,6 +25,9 @@ export interface Teacher extends User {
   _id?: string;
   teacherID: string;
   address: string;
+  phone: string;
+  subject: string;
+  assignedClasses: string[];
 }
 
 export interface Admin extends User {
@@ -80,6 +83,20 @@ export interface Timetable {
   id: string;
   classId: string;
   timetable: DaySchedule[];
+}
+
+export interface Class {
+  _id?: string;
+  className: string;
+  grade: number;
+  section: string;
+  teacherId?: Teacher;
+  students: Student[];
+  subjects: {
+    subject: string;
+    teacherId?: Teacher;
+  }[];
+  academicYear: string;
 }
 
 export interface DaySchedule {

@@ -219,6 +219,71 @@ export const adminAPI = {
     const response = await api.delete(`/admin/calendar/${id}`);
     return response.data;
   },
+
+  // Class management
+  getClasses: async () => {
+    const response = await api.get('/admin/classes');
+    return response.data;
+  },
+
+  getClassById: async (id: string) => {
+    const response = await api.get(`/admin/classes/${id}`);
+    return response.data;
+  },
+
+  createClass: async (classData: any) => {
+    const response = await api.post('/admin/classes', classData);
+    return response.data;
+  },
+
+  updateClass: async (id: string, classData: any) => {
+    const response = await api.patch(`/admin/classes/${id}`, classData);
+    return response.data;
+  },
+
+  deleteClass: async (id: string) => {
+    const response = await api.delete(`/admin/classes/${id}`);
+    return response.data;
+  },
+
+  assignTeacherToClass: async (assignmentData: { classId: string; teacherId: string }) => {
+    const response = await api.post('/admin/classes/assign-teacher', assignmentData);
+    return response.data;
+  },
+
+  addStudentToClass: async (assignmentData: { classId: string; studentId: string }) => {
+    const response = await api.post('/admin/classes/add-student', assignmentData);
+    return response.data;
+  },
+
+  removeStudentFromClass: async (assignmentData: { classId: string; studentId: string }) => {
+    const response = await api.post('/admin/classes/remove-student', assignmentData);
+    return response.data;
+  },
+
+  // Audit logs
+  getAuditLogs: async (params?: {
+    page?: number;
+    limit?: number;
+    action?: string;
+    entityType?: string;
+    userId?: string;
+    startDate?: string;
+    endDate?: string;
+    sortBy?: string;
+    sortOrder?: string;
+  }) => {
+    const queryParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          queryParams.append(key, value.toString());
+        }
+      });
+    }
+    const response = await api.get(`/admin/audit?${queryParams.toString()}`);
+    return response.data;
+  },
 };
 
 export default api;

@@ -29,6 +29,10 @@ const studentSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    classId: {
+        type: String,
+        required: true
+    },
     email: {
         type: String,
         required: true,

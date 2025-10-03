@@ -1,0 +1,11 @@
+How will the School use it ??
+-> Type of Users : 
+    students/Parents => marks , Attendance , Homework , Timetable , Notices  
+    Teachers  = Upload marks , Upload Attendance , Upload Homework , Uplaod Timetable 
+    Admin/staff => Add Student/Teachers , Manage Student/Teacher accounts , Send Notices
+
+-> User experience:
+   Student/Parents => click on link and direct login page .
+   Teacher/Admin => small option in top right corner when pressed opens respective login page .
+   
+-> 

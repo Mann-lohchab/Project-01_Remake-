@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../../Middleware/TeacherAuth');
+const auth = require('../../Middleware/AdminAuth');
 
 // Import controller functions
 const {

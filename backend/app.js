@@ -113,12 +113,16 @@ console.log('✅ All API routes loaded');
 const AdminAuth = require('./Routes/Admin/AdminAuth');
 const AdminStudents = require('./Routes/Admin/Student');
 const AdminTeachers = require('./Routes/Admin/Teacher');
+const AdminClasses = require('./Routes/Admin/Class');
 const AdminCalendar = require('./Routes/Admin/Calendar');
+const AdminAudit = require('./Routes/Admin/Audit');
 
 app.use('/api/admin', AdminAuth);
 app.use('/api/admin/students', AdminStudents);
 app.use('/api/admin/teachers', AdminTeachers);
+app.use('/api/admin/classes', AdminClasses);
 app.use('/api/admin/calendar', AdminCalendar);
+app.use('/api/admin/audit', AdminAudit);
 
 console.log('✅ Admin routes loaded');
 
@@ -162,6 +166,26 @@ app.get('/healthz', (req, res) => {
   res.status(statusCode).json(health);
 });
 
+// API health check endpoint
+app.get('/api/healthz', (req, res) => {
+  const health = {
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    database: 'disconnected'
+  };
+  
+  // Check MongoDB connection status
+  if (mongoose.connection.readyState === 1) {
+    health.database = 'connected';
+  } else if (mongoose.connection.readyState === 2) {
+    health.database = 'connecting';
+  }
+  
+  const statusCode = health.database === 'connected' ? 200 : 503;
+  res.status(statusCode).json(health);
+});
+
 // Default Route - Serve HTML file with logging
 app.get('/', (req, res) => {
   console.log('📄 Serving landing page request');
@@ -181,7 +205,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Internal server error' });
 });
 
-// 404 handler
+// 404 Requsest handler
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });

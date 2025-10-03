@@ -8,7 +8,9 @@ const{
 
 //ROUTES
 
-router.get("/:id",auth.requireAuth,getFullTimetable);
-
+router.get("/:classId", auth.requireAuth, (req, res) => {
+    console.log(`🌐 Timetable route hit: GET /${req.params.classId}`); // Added route logging
+    getFullTimetable(req, res);
+});
 
 module.exports = router

@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const calendarSchema = new mongoose.Schema({
     studentID: {
         type: String,
-        required: true
+        required: false // Optional for admin/school-wide events
     },
     title: {
         type: String,

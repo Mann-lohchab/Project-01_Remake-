@@ -1,44 +1,55 @@
-
 const Notice = require('../Models/Notice');
 
-// GET FULL NOTICE
-const getFullNotice = async (req, res) => {
-    const studentID = req.params.id;
+// GET NOTICES BY CLASS ID (for student access via class)
+const getNoticesByClass = async (req, res) => {
+    const classId = req.params.classId;
+    const student = req.student; // From auth middleware
+    console.log(`🔍 Fetching notices for class: ${classId} by student: ${student.studentID}`); // Added logging
+    
     try {
-        const fullNotice = await Notice.find({
-            studentID: new RegExp(`^${studentID}$`, "i")
-        });
-        if (fullNotice.length === 0) {
-            return res.status(404).json({ message: "The Notice was not found" });
+        const notices = await Notice.find({
+            classId: new RegExp(`^${classId}$`, "i")
+        }).sort({ date: -1 });
+        
+        console.log(`📋 Found ${notices.length} notices for class ${classId}`); // Logging results
+        
+        if (notices.length === 0) {
+            return res.status(404).json({ message: "No notices found for this class" });
         }
-        res.status(200).json(fullNotice);
+        res.status(200).json(notices);
     } catch (error) {
-        console.error("Error fetching full notice:", error);
+        console.error("❌ Error fetching notices by class:", error);
         res.status(500).json({ message: "Server error while fetching notices" });
     }
 };
 
-//GET NOTICE BY DATE
-const getNoticeByDate = async (req, res) => {
-    const studentID = req.params.id;
+// GET NOTICES BY CLASS AND DATE RANGE
+const getNoticesByClassAndDate = async (req, res) => {
+    const classId = req.params.classId;
     const fromDate = req.query.fromDate;
     const toDate = req.query.toDate;
+    const student = req.student; // From auth middleware
+    console.log(`🔍 Fetching notices for class: ${classId} from ${fromDate} to ${toDate} by student: ${student.studentID}`); // Added logging
+    
     try {
-        const NoticeByDate = await Notice.find({
-            studentID: new RegExp(`^${studentID}$`, "i"),
+        const notices = await Notice.find({
+            classId: new RegExp(`^${classId}$`, "i"),
             date: { $gte: new Date(fromDate), $lte: new Date(toDate) }
-        });
-        if (NoticeByDate.length === 0) {
-            return res.status(404).json({ message: "No Notice records found for this date range" });
+        }).sort({ date: -1 });
+        
+        console.log(`📋 Found ${notices.length} notices for class ${classId} in date range`); // Logging results
+        
+        if (notices.length === 0) {
+            return res.status(404).json({ message: "No notices found for this class and date range" });
         }
-        res.status(200).json(NoticeByDate);
+        res.status(200).json(notices);
     } catch (error) {
-        console.error("Error fetching notice by date:", error);
+        console.error("❌ Error fetching notices by class and date:", error);
         res.status(500).json({ message: "Server error while fetching notices" });
     }
 };
 
 module.exports = {
-    getFullNotice,
-    getNoticeByDate
+    getNoticesByClass,
+    getNoticesByClassAndDate
 };

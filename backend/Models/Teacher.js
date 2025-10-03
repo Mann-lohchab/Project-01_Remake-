@@ -23,6 +23,17 @@ const teacherSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    phone: {
+        type: String,
+        required: true
+    },
+    subject: {
+        type: String,
+        required: true
+    },
+    assignedClasses: [{
+        type: String
+    }],
     password: {
         type: String,
         required: true

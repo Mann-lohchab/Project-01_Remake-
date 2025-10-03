@@ -15,7 +15,9 @@ import StudentsView from './components/Teacher/StudentsView';
 import Dashboard from './components/Admin/AdminDashboard';
 import StudentManagement from './components/Admin/StudentManagement';
 import TeacherManagement from './components/Admin/TeacherManagement';
+import ClassesManagement from './components/Admin/ClassesManagement';
 import CalendarManagement from './components/Admin/CalendarManagement';
+import Settings from './components/Admin/Settings';
 
 
 
@@ -100,8 +102,16 @@ function App() {
           element: React.createElement(ProtectedRoute, { allowedRole: 'admin', children: React.createElement(TeacherManagement) })
         }),
         React.createElement(Route, {
+          path: '/admin/classes',
+          element: React.createElement(ProtectedRoute, { allowedRole: 'admin', children: React.createElement(ClassesManagement) })
+        }),
+        React.createElement(Route, {
           path: '/admin/calendar',
           element: React.createElement(ProtectedRoute, { allowedRole: 'admin', children: React.createElement(CalendarManagement) })
+        }),
+        React.createElement(Route, {
+          path: '/admin/settings',
+          element: React.createElement(ProtectedRoute, { allowedRole: 'admin', children: React.createElement(Settings) })
         }),
         React.createElement(Route, {
           path: '*',

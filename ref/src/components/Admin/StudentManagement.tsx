@@ -153,7 +153,7 @@ const StudentManagement: React.FC = () => {
               placeholder="Search students..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-[#ccc5b9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#eb5e28] focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border text-black border-[#ccc5b9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#eb5e28] focus:border-transparent"
             />
           </div>
           <button
@@ -178,7 +178,7 @@ const StudentManagement: React.FC = () => {
                   type="text"
                   value={formData.studentID}
                   onChange={(e) => setFormData({...formData, studentID: e.target.value})}
-                  className="w-full px-3 py-2 border border-[#ccc5b9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#eb5e28]"
+                  className="w-full px-3 py-2 border text-black border-[#ccc5b9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#eb5e28]"
                   required
                 />
               </div>
@@ -188,7 +188,7 @@ const StudentManagement: React.FC = () => {
                   type="text"
                   value={formData.firstName}
                   onChange={(e) => setFormData({...formData, firstName: e.target.value})}
-                  className="w-full px-3 py-2 border border-[#ccc5b9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#eb5e28]"
+                  className="w-full px-3 py-2 border  text-black border-[#ccc5b9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#eb5e28]"
                   required
                 />
               </div>
@@ -198,7 +198,7 @@ const StudentManagement: React.FC = () => {
                   type="text"
                   value={formData.lastName}
                   onChange={(e) => setFormData({...formData, lastName: e.target.value})}
-                  className="w-full px-3 py-2 border border-[#ccc5b9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#eb5e28]"
+                  className="w-full px-3 py-2 border text-black border-[#ccc5b9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#eb5e28]"
                 />
               </div>
               <div>
@@ -207,7 +207,7 @@ const StudentManagement: React.FC = () => {
                   type="text"
                   value={formData.fathersName}
                   onChange={(e) => setFormData({...formData, fathersName: e.target.value})}
-                  className="w-full px-3 py-2 border border-[#ccc5b9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#eb5e28]"
+                  className="w-full px-3 py-2 border text-black border-[#ccc5b9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#eb5e28]"
                   required
                 />
               </div>
@@ -217,7 +217,7 @@ const StudentManagement: React.FC = () => {
                   type="text"
                   value={formData.mothersName}
                   onChange={(e) => setFormData({...formData, mothersName: e.target.value})}
-                  className="w-full px-3 py-2 border border-[#ccc5b9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#eb5e28]"
+                  className="w-full px-3 py-2 border text-black border-[#ccc5b9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#eb5e28]"
                   required
                 />
               </div>
@@ -227,7 +227,7 @@ const StudentManagement: React.FC = () => {
                   type="text"
                   value={formData.Address}
                   onChange={(e) => setFormData({...formData, Address: e.target.value})}
-                  className="w-full px-3 py-2 border border-[#ccc5b9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#eb5e28]"
+                  className="w-full px-3 py-2 border text-black border-[#ccc5b9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#eb5e28]"
                   required
                 />
               </div>
@@ -237,7 +237,7 @@ const StudentManagement: React.FC = () => {
                   type="number"
                   value={formData.grade}
                   onChange={(e) => setFormData({...formData, grade: e.target.value})}
-                  className="w-full px-3 py-2 border border-[#ccc5b9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#eb5e28]"
+                  className="w-full px-3 py-2 border text-black border-[#ccc5b9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#eb5e28]"
                   required
                 />
               </div>
