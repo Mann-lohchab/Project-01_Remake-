@@ -3,3 +3,4 @@ frontend/node_modules
 backend/JWT_AUTH_MIGRATION.md 
 
 frontend/dist
+.env
